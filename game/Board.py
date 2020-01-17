@@ -94,3 +94,35 @@ class Board:
             graph_list_representation[xpos][ypos].content = 'empty'
 
         self.contents = graph_list_representation
+        graph = nx.Graph()
+
+        for r, row in enumerate(graph_list_representation):
+            for c, item in enumerate(row):
+                edge_indexes = [
+                    (r-1, c),
+                    (r-1, c+1),
+                    (r, c+1),
+                    (r+1, c),
+                    (r+1, c-1),
+                    (r, c-1)
+                ]
+
+                new_indexes = list(filter(
+                    lambda index:
+                        not(index[0] < 0 or index[0] >= self.height)
+                        and
+                        not(index[1] < 0 or index[1] >= self.height),
+                        edge_indexes
+                ))
+
+                item.neighbors = list(map(
+                    lambda index:
+                        (item, graph_list_representation[index[0]][index[1]]),
+                        new_indexes
+                    )
+                )
+
+                graph.add_edges_from(item.neighbors)
+
+        nx.draw(graph, with_labels=False, font_weight='bold')
+        plt.show()
