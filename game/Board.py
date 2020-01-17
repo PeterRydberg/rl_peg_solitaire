@@ -28,7 +28,7 @@ class Board:
             raise ValueError("Board type must be triangle or diamond")
 
         self.board_graph.generate_graph(self.board_content)
-        self.board_graph.display_graph()
+        self.board_graph.display_graph(self.board_content)
 
     # Board generation for triangular boards
     def gen_triangle_board(self, initial_empty):
