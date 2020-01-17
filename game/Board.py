@@ -1,9 +1,7 @@
+from BoardGraph import BoardGraph
 from Peghole import Peghole
 
 import math
-
-import networkx as nx
-import matplotlib.pyplot as plt
 
 
 class Board:
@@ -16,8 +14,9 @@ class Board:
             initial_empty = {
                 (math.floor(self.height / 2), math.floor(self.height / 2))
                 }
+
         self.board_content = []
-        self.graph = nx.Graph()
+        self.board_graph = BoardGraph()
         self.generate_board(initial_empty)
 
     def generate_board(self, initial_empty):
@@ -27,6 +26,9 @@ class Board:
             self.gen_diamond_board(initial_empty)
         else:
             raise ValueError("Board type must be triangle or diamond")
+
+        self.board_graph.generate_graph(self.board_content)
+        self.board_graph.display_graph()
 
     # Board generation for triangular boards
     def gen_triangle_board(self, initial_empty):
@@ -111,13 +113,7 @@ class Board:
 
                 item.neighbors = list(map(
                     lambda index:
-                        (item, self.board_content[index[0]][index[1]]),
+                        self.board_content[index[0]][index[1]],
                         neighbors
                     )
                 )
-
-                # Add to visual graph
-                self.graph.add_edges_from(item.neighbors)
-
-        nx.draw(self.graph, with_labels=True, font_weight='bold')
-        plt.show()
