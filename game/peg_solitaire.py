@@ -2,14 +2,18 @@ from Board import Board
 
 
 def main():
-    triangle_board = Board('triangle', 3)
-    print(triangle_board.contents[2][2].content)
 
-    diamond_board = Board('diamond', 3)
-    print(diamond_board.contents[1][0].content)
+    try:
+        triangle_board = Board('triangle', 3, {(1, 1)})
+        print(triangle_board.board_content[1][1].content)
 
-    failboard = Board('kjhdsf', 3)
-    print(failboard.contents[1][1].content)
+        diamond_board = Board('diamond', 3)
+        print(diamond_board.board_content[1][0].content)
+
+        failboard = Board('kjhdsf', 3)
+        print(failboard.board_content[1][1].content)
+    except ValueError as e:
+        print(str(e))
 
 
 if __name__ == "__main__":
