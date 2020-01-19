@@ -9,26 +9,29 @@ class Board:
         self.board_type = board_type
         self.height = height
 
-        # If empty holes are unspecified, default is center
-        if(not initial_empty):
-            initial_empty = {
-                (math.floor(self.height / 2), math.floor(self.height / 2))
-                }
-
         self.board_content = []
-        self.board_graph = BoardGraph()
+        self.board_graph = BoardGraph(update_time=2)
         self.generate_board(initial_empty)
 
     def generate_board(self, initial_empty):
+
         if(self.board_type == 'triangle'):
+            if(not initial_empty):
+                initial_empty = self.get_center()
+
             self.gen_triangle_board(initial_empty)
         elif(self.board_type == 'diamond'):
+            if(not initial_empty):
+                initial_empty = self.get_center()
+
             self.gen_diamond_board(initial_empty)
         else:
             raise ValueError("Board type must be triangle or diamond")
 
+        # Generate visual graph
+        # TODO: Make this conditional
         self.board_graph.generate_graph(self.board_content)
-        self.board_graph.display_graph(self.board_content)
+        self.board_graph.display_graph()
 
     # Board generation for triangular boards
     def gen_triangle_board(self, initial_empty):
@@ -117,3 +120,14 @@ class Board:
                         neighbors
                     )
                 )
+
+    # If empty holes are unspecified, default is center
+    def get_center(self):
+        x = 2
+        y = 4 if(self.board_type == 'triangle') else 2
+        return {
+            (
+                math.floor(self.height / x),
+                math.floor(self.height / y)
+            )
+        }

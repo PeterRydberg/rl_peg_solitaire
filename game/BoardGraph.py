@@ -4,45 +4,49 @@ import itertools
 
 
 class BoardGraph:
-    def __init__(self):
+    def __init__(self, update_time):
         self.graph = nx.Graph()
+        self.update_time = update_time
 
     def generate_graph(self, pegholes):
         edges = self.generate_networkx_edges(pegholes)
-        # Add to visual graph
-        self.graph.add_edges_from(edges)
+        self.graph.add_edges_from(edges)  # Add to visual graph
 
-    def display_graph(self, pegholes):
-        # edges = self.generate_networkx_edges
-        flattened = list(itertools.chain(*pegholes))
-
-        filled_nodes = list(filter(lambda x: x.content == 'filled', flattened))
-        empty_nodes = list(filter(lambda x: x.content == 'empty', flattened))
-
+    def display_graph(self):
         pos = nx.spring_layout(self.graph)
-        nx.draw_networkx_nodes(
+        plt.ion()
+        nx.draw(
             self.graph,
             pos=pos,
-            nodelist=filled_nodes,
-            node_color='#000000',
-            with_labels=True,
-            font_weight='bold'
+            node_color=self.get_color_list(self.graph.nodes),
+            with_labels=False,
+            font_weight='bold',
         )
-        nx.draw_networkx_nodes(
-            self.graph,
-            pos=pos,
-            nodelist=empty_nodes,
-            node_color='#ffffff',
-            with_labels=True,
-            font_weight='bold'
-        )
-        nx.draw_networkx_edges(
-            self.graph,
-            pos=pos,
 
-        )
         plt.axis('off')
         plt.show()
+        self.live_update_graph()
+
+    def live_update_graph(self):
+        plt.pause(self.update_time)
+        plt.clf()
+
+    def get_color_list(self, nodes):
+        colors = []
+        for node in nodes:
+            colors.append(self.get_node_color(node))
+
+        return colors
+
+    def get_node_color(self, node):
+        if(node.content == 'filled'):
+            return '#000000'
+        elif(node.content == 'empty'):
+            return '#ffffff'
+        elif(node.content == 'selected'):
+            return '#00ff00'
+        elif(node.content == 'jump'):
+            return 'ff0000'
 
     def generate_networkx_edges(self, pegholes):
         edges = []

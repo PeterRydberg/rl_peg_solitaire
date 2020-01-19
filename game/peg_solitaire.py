@@ -4,7 +4,7 @@ from Board import Board
 def main():
 
     try:
-        triangle_board = Board('triangle', 3, {(1, 1)})
+        triangle_board = Board('triangle', 3)
         print(triangle_board.board_content[1][1].content)
 
         diamond_board = Board('diamond', 3)
