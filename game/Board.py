@@ -5,16 +5,26 @@ import math
 
 
 class Board:
-    def __init__(self, board_type, height, initial_empty={}):
+    def __init__(
+        self,
+        board_type,
+        height,
+        initial_empty,
+        live_update_frequency,
+        display_game
+    ):
         self.board_type = board_type
         self.height = height
 
         self.board_content = []
-        self.board_graph = BoardGraph(update_time=2)
         self.generate_board(initial_empty)
+        if(display_game):
+            self.board_graph = BoardGraph(
+                self.board_content,
+                live_update_frequency
+            )
 
     def generate_board(self, initial_empty):
-
         if(self.board_type == 'triangle'):
             if(not initial_empty):
                 initial_empty = self.get_center()
@@ -27,11 +37,6 @@ class Board:
             self.gen_diamond_board(initial_empty)
         else:
             raise ValueError("Board type must be triangle or diamond")
-
-        # Generate visual graph
-        # TODO: Make this conditional
-        self.board_graph.generate_graph(self.board_content)
-        self.board_graph.display_graph()
 
     # Board generation for triangular boards
     def gen_triangle_board(self, initial_empty):

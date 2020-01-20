@@ -1,17 +1,16 @@
-from Board import Board
+from PegGame import PegGame
 
 
 def main():
 
     try:
-        triangle_board = Board('triangle', 3)
-        print(triangle_board.board_content[1][1].content)
-
-        diamond_board = Board('diamond', 3)
-        print(diamond_board.board_content[1][0].content)
-
-        failboard = Board('kjhdsf', 3)
-        print(failboard.board_content[1][1].content)
+        newGame = PegGame(
+            'triangle',
+            4,
+            live_update_frequency=5,
+            display_game=True
+            )
+        newGame.show_graph()
     except ValueError as e:
         print(str(e))
 

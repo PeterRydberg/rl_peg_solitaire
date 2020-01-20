@@ -4,9 +4,11 @@ import itertools
 
 
 class BoardGraph:
-    def __init__(self, update_time):
+    def __init__(self, board_content, live_update_frequency):
         self.graph = nx.Graph()
-        self.update_time = update_time
+        self.generate_graph(board_content)
+
+        self.live_update_frequency = live_update_frequency
 
     def generate_graph(self, pegholes):
         edges = self.generate_networkx_edges(pegholes)
@@ -28,7 +30,7 @@ class BoardGraph:
         self.live_update_graph()
 
     def live_update_graph(self):
-        plt.pause(self.update_time)
+        plt.pause(self.live_update_frequency)
         plt.clf()
 
     def get_color_list(self, nodes):
