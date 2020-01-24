@@ -7,9 +7,10 @@ def main():
         newGame = PegGame(
             'triangle',
             7,
-            live_update_frequency=5,
+            live_update_frequency=20,
             display_game=True
             )
+        print(newGame.get_legal_moves())
         states = newGame.make_move("down")
         print(states)
         newGame.show_graph()

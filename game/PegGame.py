@@ -12,6 +12,10 @@ class PegGame:
         display_game=False
     ):
         self.display_game = display_game
+        # if(board_type == "triangle"):
+        #     self.directions = DirectionsTriangle()
+        # elif(board_type == "diamond"):
+        #     self.directions = DirectionsDiamond()
 
         self.board = Board(
             board_type,
@@ -25,7 +29,22 @@ class PegGame:
         pass
 
     def get_legal_moves(self):
-        pass
+        legal_moves = []
+        for row in self.board.board_content:
+            for peghole in row:
+                for i, neighbor in enumerate(peghole.neighbors):
+                    # If possible direct jump over adjacent node
+                    if(
+                        neighbor
+                        and
+                        neighbor.content != "empty"
+                        and
+                        neighbor.neighbors[i]
+                        and
+                        neighbor.neighbors[i].content == "empty"
+                    ):
+                        legal_moves.append((peghole, i))
+        return legal_moves
 
     def show_graph(self):
         self.board.board_graph.display_graph()
