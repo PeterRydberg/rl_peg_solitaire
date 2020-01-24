@@ -6,14 +6,12 @@ def main():
     try:
         newGame = PegGame(
             'triangle',
-            7,
-            live_update_frequency=20,
+            6,
+            live_update_frequency=5,
             display_game=True
             )
-        print(newGame.get_legal_moves())
-        states = newGame.make_move("down")
-        print(states)
         newGame.show_graph()
+        states = newGame.try_move((3, 3), 4)
     except ValueError as e:
         print(str(e))
 

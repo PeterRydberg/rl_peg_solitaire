@@ -13,10 +13,24 @@ class BoardGraph:
     def generate_graph(self, pegholes):
         edges = self.generate_networkx_edges(pegholes)
         self.graph.add_edges_from(edges)  # Add to visual graph
+        self.init_graph()  # Draws the initial graph
 
-    def display_graph(self):
-        pos = nx.spring_layout(self.graph)
+    def init_graph(self):
         plt.ion()
+        plt.axis('off')
+
+    def show_graph(self):
+        self.draw_graph()
+        plt.show()
+        plt.pause(self.live_update_frequency)
+
+    def live_update_graph(self):
+        plt.clf()
+        self.draw_graph()
+        plt.pause(self.live_update_frequency)
+
+    def draw_graph(self):
+        pos = nx.spring_layout(self.graph)
         nx.draw(
             self.graph,
             pos=pos,
@@ -24,14 +38,6 @@ class BoardGraph:
             with_labels=False,
             font_weight='bold',
         )
-
-        plt.axis('off')
-        plt.show()
-        self.live_update_graph()
-
-    def live_update_graph(self):
-        plt.pause(self.live_update_frequency)
-        plt.clf()
 
     def get_color_list(self, nodes):
         colors = []

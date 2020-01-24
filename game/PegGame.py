@@ -25,8 +25,25 @@ class PegGame:
             self.display_game
         )
 
-    def make_move(self, direction):
-        pass
+    def try_move(self, peghole_index, direction):
+        legal_moves = self.get_legal_moves()
+        peghole = self.board.board_content[peghole_index[0]][peghole_index[1]]
+
+        if(legal_moves and (peghole, direction) in legal_moves):
+            self.make_move((peghole, direction))
+
+        return None
+
+    def make_move(self, move):
+        (peghole, direction) = move
+        peghole.content = "empty"
+        peghole.neighbors[direction].content = "empty"
+        peghole.neighbors[direction].neighbors[direction].content = "filled"
+
+        if(self.display_game):
+            self.update_graph()
+
+        return self.board.board_content
 
     def get_legal_moves(self):
         legal_moves = []
@@ -47,7 +64,10 @@ class PegGame:
         return legal_moves
 
     def show_graph(self):
-        self.board.board_graph.display_graph()
+        self.board.board_graph.show_graph()
+
+    def update_graph(self):
+        self.board.board_graph.live_update_graph()
 
     # Legal directions for triangle boards
     class DirectionsTriangle(Enum):
