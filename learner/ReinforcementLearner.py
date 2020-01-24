@@ -3,7 +3,13 @@ from Critic import Critic
 
 
 class ReinforcementLearner:
-    def __init__(self, episodes, game_settings, critic_settings, actor_settings):
+    def __init__(
+        self,
+        episodes,
+        game_settings,
+        critic_settings,
+        actor_settings
+    ):
         self.episodes = episodes
         self.game_settings = game_settings
 
@@ -20,7 +26,6 @@ class ReinforcementLearner:
                             actor_settings["a_discount_factor"],
                             actor_settings["a_e_greediness"]
                             )
-
 
     def train_model(self):
         pass
