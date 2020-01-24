@@ -52,11 +52,11 @@ class BoardGraph:
 
     def generate_networkx_edges(self, pegholes):
         edges = []
-
         # Flattens list and accesses each pegholes' neighbors
         for peghole in list(itertools.chain(*pegholes)):
             for neighbor in peghole.neighbors:
-                edges.append((peghole, neighbor))
+                if(neighbor):
+                    edges.append((peghole, neighbor))
 
         return edges
 

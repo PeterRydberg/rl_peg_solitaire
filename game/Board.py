@@ -88,8 +88,8 @@ class Board:
                         (r-1, c-1)
                     ]
 
-                    neighbors = list(filter(
-                        lambda index:
+                    for index in edge_indexes:
+                        if(  # If inside of board bounds
                             not(index[0] < 0 or index[0] >= self.height or (
                                     index[1] == c
                                     and index[0] < len(row)
@@ -97,9 +97,13 @@ class Board:
                                 ))
                             and
                             not(index[1] < 0 or index[1] >= self.height or (
-                                index[0] <= r and index[1] >= len(row))),
-                            edge_indexes
-                    ))
+                                index[0] <= r and index[1] >= len(row)))
+                        ):  # Append the node to neighbors
+                            item.neighbors.append(
+                                self.board_content[index[0]][index[1]]
+                            )
+                        else:  # Else, append None
+                            item.neighbors.append(None)
 
                 elif(self.board_type == 'diamond'):
                     edge_indexes = [
@@ -111,20 +115,17 @@ class Board:
                         (r, c-1)
                     ]
 
-                    neighbors = list(filter(
-                        lambda index:
-                            not(index[0] < 0 or index[0] >= self.height)
-                            and
-                            not(index[1] < 0 or index[1] >= self.height),
-                            edge_indexes
-                    ))
-
-                item.neighbors = list(map(
-                    lambda index:
-                        self.board_content[index[0]][index[1]],
-                        neighbors
-                    )
-                )
+                    for index in edge_indexes:
+                        if(  # If inside of board bounds
+                                not(index[0] < 0 or index[0] >= self.height)
+                                and
+                                not(index[1] < 0 or index[1] >= self.height)
+                        ):  # Append the node to neighbors
+                            item.neighbors.append(
+                                self.board_content[index[0]][index[1]]
+                                )
+                        else:  # Else, append None
+                            item.neighbors.append(None)
 
     # If empty holes are unspecified, default is center
     def get_center(self):
