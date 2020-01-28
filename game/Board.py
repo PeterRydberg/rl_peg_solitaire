@@ -24,60 +24,66 @@ class Board:
                 live_update_frequency
             )
 
+    # Generate board types based on input type
     def generate_board(self, initial_empty):
+        board_content = []
+        if(not initial_empty):
+            initial_empty = self.get_center()
+
         if(self.board_type == 'triangle'):
-            if(not initial_empty):
-                initial_empty = self.get_center()
-
-            self.gen_triangle_board(initial_empty)
+            board_content = self.gen_triangle_board(initial_empty)
         elif(self.board_type == 'diamond'):
-            if(not initial_empty):
-                initial_empty = self.get_center()
-
-            self.gen_diamond_board(initial_empty)
+            board_content = self.gen_diamond_board(initial_empty)
         else:
             raise ValueError("Board type must be triangle or diamond")
+
+        self.board_content = board_content
+        self.add_to_peghole_neighborhood()
 
     # Board generation for triangular boards
     def gen_triangle_board(self, initial_empty):
         board_content = []
 
+        # Add pegholes and peghole rows to board
         for x in range(self.height):
             row = []
             for y in range(x + 1):
-
-                if((x, y) not in initial_empty):
-                    row.append(Peghole('filled'))
-                # Removes peg contents for each coordinate of initial holes
-                else:
-                    row.append(Peghole('empty'))
+                peghole = self.gen_peghole(initial_empty, (x, y))
+                row.append(peghole)
             board_content.append(row)
 
-        self.board_content = board_content
-        self.add_to_peghole_neighborhood()
+        return board_content
 
     # Board generation for diamond boards
     def gen_diamond_board(self, initial_empty):
         board_content = []
 
+        # Add pegholes and peghole rows to board
         for x in range(self.height):
             row = []
             for y in range(self.height):
-
-                if((x, y) not in initial_empty):
-                    row.append(Peghole('filled'))
-                # Removes peg contents for each coordinate of initial holes
-                else:
-                    row.append(Peghole('empty'))
+                peghole = self.gen_peghole(initial_empty, (x, y))
+                row.append(peghole)
             board_content.append(row)
 
-        self.board_content = board_content
-        self.add_to_peghole_neighborhood()
+        return board_content
+
+    def gen_peghole(self, initial_empty, coordinate):
+        peghole = Peghole()
+        peghole.coordinates = coordinate
+
+        if(coordinate not in initial_empty):
+            peghole.content = 'filled'
+        else:  # Remove peg contents for each coordinate of initial holes
+            peghole.content = 'empty'
+
+        return peghole
 
     def add_to_peghole_neighborhood(self):
         for r, row in enumerate(self.board_content):
             for c, item in enumerate(row):
 
+                # Triangle peghole edge indexes
                 if(self.board_type == 'triangle'):
                     edge_indexes = [
                         (r-1, c),
@@ -105,6 +111,7 @@ class Board:
                         else:  # Else, append None
                             item.neighbors.append(None)
 
+                # Diamond peghole edge indexes
                 elif(self.board_type == 'diamond'):
                     edge_indexes = [
                         (r-1, c),
