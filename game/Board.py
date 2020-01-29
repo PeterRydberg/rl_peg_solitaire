@@ -21,6 +21,7 @@ class Board:
         if(display_game):
             self.board_graph = BoardGraph(
                 self.board_content,
+                self.board_type,
                 live_update_frequency
             )
 

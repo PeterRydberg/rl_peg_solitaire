@@ -4,11 +4,12 @@ import itertools
 
 
 class BoardGraph:
-    def __init__(self, board_content, live_update_frequency):
+    def __init__(self, board_content, board_type, live_update_frequency):
         self.graph = nx.Graph()
-        self.generate_graph(board_content)
-
         self.live_update_frequency = live_update_frequency
+
+        self.generate_graph(board_content)
+        self.pos = self.compute_positions(100, board_type)
 
     def generate_graph(self, pegholes):
         edges = self.generate_networkx_edges(pegholes)
@@ -30,14 +31,31 @@ class BoardGraph:
         plt.pause(self.live_update_frequency)
 
     def draw_graph(self):
-        pos = nx.spring_layout(self.graph)
         nx.draw(
             self.graph,
-            pos=pos,
+            pos=self.pos,
             node_color=self.get_color_list(self.graph.nodes),
             with_labels=False,
             font_weight='bold',
         )
+
+    def compute_positions(self, size, board_type):
+        pos = {}
+        step = size / 10
+
+        for node in self.graph:
+            (x, y) = node.coordinates
+
+            # Generates specific board coordinates
+            if(board_type == "triangle"):
+                xpos = size + (-step) * (x/2) + step * y
+                ypos = size + (-step) * x
+            elif(board_type == "diamond"):
+                xpos = size + (-step) * x + step * y
+                ypos = size + (-step) * x + (-step) * y
+            pos[node] = (xpos, ypos)
+
+        return pos
 
     def get_color_list(self, nodes):
         colors = []
@@ -54,7 +72,7 @@ class BoardGraph:
         elif(node.content == 'selected'):
             return '#00ff00'
         elif(node.content == 'jump'):
-            return 'ff0000'
+            return '#ff0000'
 
     def generate_networkx_edges(self, pegholes):
         edges = []
