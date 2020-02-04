@@ -12,10 +12,6 @@ class PegGame:
         display_game=False
     ):
         self.display_game = display_game
-        # if(board_type == "triangle"):
-        #     self.directions = DirectionsTriangle()
-        # elif(board_type == "diamond"):
-        #     self.directions = DirectionsDiamond()
 
         self.board = Board(
             board_type,
@@ -24,6 +20,14 @@ class PegGame:
             live_update_frequency,
             self.display_game
         )
+
+        if(self.display_game):
+            self.show_graph()
+
+        # if(board_type == "triangle"):
+        #     self.directions = DirectionsTriangle()
+        # elif(board_type == "diamond"):
+        #     self.directions = DirectionsDiamond()
 
     def try_move(self, peghole_index, direction):
         legal_moves = self.get_legal_moves()
@@ -36,6 +40,13 @@ class PegGame:
 
     def make_move(self, move):
         (peghole, direction) = move
+
+        # Updates pegs to be changed for clear visuals
+        if(self.display_game):
+            peghole.content = "selected"
+            peghole.neighbors[direction].content = "jump"
+            self.update_graph()
+
         peghole.content = "empty"
         peghole.neighbors[direction].content = "empty"
         peghole.neighbors[direction].neighbors[direction].content = "filled"

@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import itertools
+import time
 
 
 class BoardGraph:
@@ -23,12 +24,12 @@ class BoardGraph:
     def show_graph(self):
         self.draw_graph()
         plt.show()
-        plt.pause(self.live_update_frequency)
+        plt.pause(self.live_update_frequency)  # Used when only blocking GPU
 
     def live_update_graph(self):
         plt.clf()
         self.draw_graph()
-        plt.pause(self.live_update_frequency)
+        plt.pause(self.live_update_frequency)  # Used when only blocking GPU
 
     def draw_graph(self):
         nx.draw(
@@ -66,13 +67,13 @@ class BoardGraph:
 
     def get_node_color(self, node):
         if(node.content == 'filled'):
-            return '#000000'
+            return '#2b2b2b'
         elif(node.content == 'empty'):
-            return '#ffffff'
+            return '#c4c4c4'
         elif(node.content == 'selected'):
-            return '#00ff00'
+            return '#103f37'
         elif(node.content == 'jump'):
-            return '#ff0000'
+            return '#6b1c08'
 
     def generate_networkx_edges(self, pegholes):
         edges = []

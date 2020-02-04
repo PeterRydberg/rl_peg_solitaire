@@ -7,10 +7,9 @@ def main():
         newGame = PegGame(
             'triangle',
             6,
-            live_update_frequency=5,
+            live_update_frequency=2,
             display_game=True
             )
-        newGame.show_graph()
         states = newGame.try_move((3, 3), 4)
     except ValueError as e:
         print(str(e))
