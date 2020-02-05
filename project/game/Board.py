@@ -1,5 +1,5 @@
-from BoardGraph import BoardGraph
-from Peghole import Peghole
+from .BoardGraph import BoardGraph
+from .Peghole import Peghole
 
 import math
 

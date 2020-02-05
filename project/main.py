@@ -1,11 +1,11 @@
-from ReinforcementLearner import ReinforcementLearner
+from learner.ReinforcementLearner import ReinforcementLearner
 
 
 def main():
 
     game_settings = {
         "board_type": "triangle",
-        "board_size": 5,
+        "board_size": 6,
         "initial_empty": {},
         "live_update_frequency": 2,
         "display_game": True

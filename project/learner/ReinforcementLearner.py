@@ -1,5 +1,6 @@
-from Actor import Actor
-from Critic import Critic
+from .Actor import Actor
+from .Critic import Critic
+from game.PegGame import PegGame
 
 
 class ReinforcementLearner:
