@@ -1,7 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import itertools
-import time
 
 
 class BoardGraph:
@@ -32,6 +31,7 @@ class BoardGraph:
         plt.pause(self.live_update_frequency)  # Used when only blocking GPU
 
     def draw_graph(self):
+        plt.clf()
         nx.draw(
             self.graph,
             pos=self.pos,
