@@ -33,10 +33,11 @@ class PegGame:
         legal_moves = self.get_legal_moves()
         peghole = self.board.board_content[peghole_index[0]][peghole_index[1]]
 
+        # If there are legal moves and the one chosen is legal
         if(legal_moves and (peghole, direction) in legal_moves):
             self.make_move((peghole, direction))
 
-        return None
+        return (self.board.board_content, self.get_legal_moves())
 
     def make_move(self, move):
         (peghole, direction) = move
@@ -47,14 +48,13 @@ class PegGame:
             peghole.neighbors[direction].content = "jump"
             self.update_graph()
 
+        # Actually moves the pegs
         peghole.content = "empty"
         peghole.neighbors[direction].content = "empty"
         peghole.neighbors[direction].neighbors[direction].content = "filled"
 
         if(self.display_game):
             self.update_graph()
-
-        return self.board.board_content
 
     def get_legal_moves(self):
         legal_moves = []
