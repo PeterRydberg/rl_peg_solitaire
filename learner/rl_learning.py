@@ -8,12 +8,12 @@ def main():
         "board_size": 5,
         "initial_empty": {},
         "live_update_frequency": 2,
-        "display_game": False
+        "display_game": True
     }
 
     critic_settings = {
         "c_type": "table",
-        "c_learning_rate": 0.001,
+        "c_learning_rate": 0.1,
         "c_eligibility_decay": 0.05,
         "c_discount_factor": 0.05,
         "c_nn_layers": (1, 2, 3)
@@ -28,12 +28,12 @@ def main():
 
     try:
         rl_learner = ReinforcementLearner(
-            episodes=500,
+            episodes=1,
             game_settings=game_settings,
             critic_settings=critic_settings,
             actor_settings=actor_settings
         )
-        print(rl_learner.actor.e_greediness)
+        rl_learner.train_model()
     except ValueError as e:
         print(str(e))
 

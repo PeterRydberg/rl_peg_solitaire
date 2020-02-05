@@ -28,4 +28,13 @@ class ReinforcementLearner:
                             )
 
     def train_model(self):
-        pass
+        # Iterate through all episodes
+        for episode in range(self.episodes):
+            currentGame = PegGame(
+                self.game_settings["board_type"],
+                self.game_settings["board_size"],
+                self.game_settings["initial_empty"],
+                self.game_settings["live_update_frequency"],
+                self.game_settings["display_game"]
+            )
+            currentGame.try_move((3, 3), 4)
