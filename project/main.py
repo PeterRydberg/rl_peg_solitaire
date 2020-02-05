@@ -8,7 +8,7 @@ def main():
         "board_size": 6,
         "initial_empty": {},
         "live_update_frequency": 2,
-        "display_game": True
+        "display_game": (1, 50, 500)
     }
 
     critic_settings = {
@@ -28,7 +28,7 @@ def main():
 
     try:
         rl_learner = ReinforcementLearner(
-            episodes=1,
+            episodes=500,
             game_settings=game_settings,
             critic_settings=critic_settings,
             actor_settings=actor_settings

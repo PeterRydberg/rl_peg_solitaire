@@ -9,7 +9,8 @@ class PegGame:
         board_size,
         initial_empty={},
         live_update_frequency=2,
-        display_game=False
+        display_game=False,
+        episode_number=None
     ):
         self.display_game = display_game
 
@@ -22,7 +23,7 @@ class PegGame:
         )
 
         if(self.display_game):
-            self.show_graph()
+            self.show_graph(episode_number)
 
         # if(board_type == "triangle"):
         #     self.directions = DirectionsTriangle()
@@ -56,6 +57,9 @@ class PegGame:
         if(self.display_game):
             self.update_graph()
 
+    def get_board_state(self):
+        return self.board.board_content
+
     def get_legal_moves(self):
         legal_moves = []
         for row in self.board.board_content:
@@ -74,8 +78,8 @@ class PegGame:
                         legal_moves.append((peghole, i))
         return legal_moves
 
-    def show_graph(self):
-        self.board.board_graph.show_graph()
+    def show_graph(self, episode_number):
+        self.board.board_graph.show_graph(episode_number)
 
     def update_graph(self):
         self.board.board_graph.live_update_graph()

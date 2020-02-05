@@ -12,3 +12,6 @@ class Actor:
         self.e_greediness = e_greediness
 
         self.eligibilities = {}
+
+    def initialize_actor(self):
+        pass

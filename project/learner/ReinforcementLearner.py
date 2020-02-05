@@ -29,13 +29,27 @@ class ReinforcementLearner:
                             )
 
     def train_model(self):
+        self.critic.initialize_critic()
+        self.actor.initialize_actor()
+
         # Iterate through all episodes
         for episode in range(self.episodes):
+
+            # Initializes new game using game settings
             currentGame = PegGame(
                 self.game_settings["board_type"],
                 self.game_settings["board_size"],
                 self.game_settings["initial_empty"],
                 self.game_settings["live_update_frequency"],
-                self.game_settings["display_game"]
+                (episode + 1) in self.game_settings["display_game"],
+                episode + 1
             )
-            currentGame.try_move((3, 3), 4)
+
+            initial_board_state = currentGame.get_board_state()
+            initial_legal_moves = currentGame.get_legal_moves()
+            self.critic.update_eligibilities(
+                                            initial_board_state,
+                                            initial_legal_moves
+                                            )
+
+            # currentGame.try_move((3, 3), 4)

@@ -15,3 +15,10 @@ class Critic:
 
         self.eligibilities = {}
         self.values = {}
+
+    def initialize_critic(self):
+        pass
+
+    def update_eligibilities(self, state, legal_moves):
+        # TODO: Calculate values. Add state to val if not exist
+        pass
