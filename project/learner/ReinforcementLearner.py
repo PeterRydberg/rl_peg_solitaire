@@ -31,8 +31,7 @@ class ReinforcementLearner:
                             )
 
     def train_model(self):
-        self.critic.initialize_critic()
-        self.actor.initialize_actor()
+        self.init_actor_critic()
 
         # Iterate through all episodes
         for episode in range(self.episodes):
@@ -64,6 +63,19 @@ class ReinforcementLearner:
                 current_state=initial_board_state,
                 update_state=initial_board_state
             )
+
+    def init_actor_critic(self):
+        game_structure = PegGame(
+            self.game_settings["board_type"],
+            self.game_settings["board_size"],
+            self.game_settings["initial_empty"]
+        )
+
+        # TODO: Function in PegGame for returning all possible states
+        # TODO: Function in PegGame for returning all possible SAP
+
+        self.critic.initialize_critic()
+        self.actor.initialize_actor()
 
     # Converts the Peghole object state to bitstring (label)
     def convert_flat_state_string(self, board_state):
