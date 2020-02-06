@@ -20,6 +20,9 @@ class Actor:
     def initialize_actor(self):
         pass
 
+    def update_policy(self, current_state, legal_moves):
+        pass
+
     def update_eligibilities(self, current_state, update_state):
         if(current_state == update_state):
             self.eligibilities[update_state] = 1

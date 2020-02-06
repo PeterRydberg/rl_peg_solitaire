@@ -66,8 +66,8 @@ class PegGame:
     # Returns all legal moves for the current board state
     def get_legal_moves(self):
         legal_moves = []
-        for row in self.board.board_content:
-            for peghole in row:
+        for r, row in enumerate(self.board.board_content):
+            for c, peghole in enumerate(row):
                 for i, neighbor in enumerate(peghole.neighbors):
                     # If possible direct jump over adjacent node
                     if(
@@ -79,7 +79,7 @@ class PegGame:
                         and
                         neighbor.neighbors[i].content == "empty"
                     ):
-                        legal_moves.append((peghole, self.directions(i).name))
+                        legal_moves.append(((r, c), self.directions(i).name))
         return legal_moves
 
     def show_graph(self):

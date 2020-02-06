@@ -52,13 +52,18 @@ class ReinforcementLearner:
             )
 
             initial_board_state = self.convert_flat_state_string(
-                currentGame.get_board_state()
+                    currentGame.get_board_state()
                 )
             initial_legal_moves = currentGame.get_legal_moves()
+
             self.critic.update_eligibilities(
-                                            current_state=initial_board_state,
-                                            update_state=initial_board_state
-                                            )
+                current_state=initial_board_state,
+                update_state=initial_board_state
+            )
+            self.actor.update_eligibilities(
+                current_state=initial_board_state,
+                update_state=initial_board_state
+            )
 
     # Converts the Peghole object state to bitstring (label)
     def convert_flat_state_string(self, board_state):
