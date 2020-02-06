@@ -59,7 +59,6 @@ class ReinforcementLearner:
                                             current_state=initial_board_state,
                                             update_state=initial_board_state
                                             )
-            print(self.critic.eligibilities)
 
     # Converts the Peghole object state to bitstring (label)
     def convert_flat_state_string(self, board_state):

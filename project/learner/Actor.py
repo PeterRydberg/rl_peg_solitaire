@@ -1,3 +1,6 @@
+import random
+
+
 class Actor:
     def __init__(
         self,
@@ -12,6 +15,7 @@ class Actor:
         self.e_greediness = e_greediness
 
         self.eligibilities = {}
+        self.policy = {}
 
     def initialize_actor(self):
         pass
@@ -26,3 +30,9 @@ class Actor:
     def reset_elegibilities(self):
         for i in self.eligibilities:
             self.eligibilities[i] = 1
+
+    def make_move(self):
+        if(random.uniform(0, 1) > 1 - self.e_greediness):
+            return max(self.policy, key=(lambda key: self.policy[key]))
+        else:
+            return random.choice(list(self.policy.keys()))
