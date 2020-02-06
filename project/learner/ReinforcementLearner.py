@@ -42,7 +42,7 @@ class ReinforcementLearner:
                 self.game_settings["initial_empty"],
                 self.game_settings["live_update_frequency"],
                 (episode + 1) in self.game_settings["display_game"],
-                episode + 1
+                f'Episode {episode + 1}'
             )
 
             initial_board_state = currentGame.get_board_state()
@@ -52,4 +52,4 @@ class ReinforcementLearner:
                                             initial_legal_moves
                                             )
 
-            # currentGame.try_move((3, 3), 4)
+            currentGame.try_move((3, 3), 4)

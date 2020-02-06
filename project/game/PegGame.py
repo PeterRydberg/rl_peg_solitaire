@@ -10,7 +10,7 @@ class PegGame:
         initial_empty={},
         live_update_frequency=2,
         display_game=False,
-        episode_number=None
+        game_name=None
     ):
         self.display_game = display_game
 
@@ -23,7 +23,8 @@ class PegGame:
         )
 
         if(self.display_game):
-            self.show_graph(episode_number)
+            self.game_name = game_name
+            self.show_graph()
 
         # if(board_type == "triangle"):
         #     self.directions = DirectionsTriangle()
@@ -78,11 +79,11 @@ class PegGame:
                         legal_moves.append((peghole, i))
         return legal_moves
 
-    def show_graph(self, episode_number):
-        self.board.board_graph.show_graph(episode_number)
+    def show_graph(self):
+        self.board.board_graph.show_graph(self.game_name)
 
     def update_graph(self):
-        self.board.board_graph.live_update_graph()
+        self.board.board_graph.live_update_graph(self.game_name)
 
     # Legal directions for triangle boards
     class DirectionsTriangle(Enum):

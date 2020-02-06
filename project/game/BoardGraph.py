@@ -20,19 +20,19 @@ class BoardGraph:
         plt.ion()
         plt.axis('off')
 
-    def show_graph(self, episode_number):
-        self.draw_graph(episode_number)
+    def show_graph(self, game_name):
+        self.draw_graph(game_name)
         plt.show()
         plt.pause(self.live_update_frequency)  # Used when only blocking GPU
 
-    def live_update_graph(self):
+    def live_update_graph(self, game_name):
         plt.clf()
-        self.draw_graph()
+        self.draw_graph(game_name)
         plt.pause(self.live_update_frequency)  # Used when only blocking GPU
 
-    def draw_graph(self, episode_number):
+    def draw_graph(self, game_name):
         plt.clf()
-        plt.title(f'Episode {episode_number}')
+        plt.title(game_name)
         nx.draw(
             self.graph,
             pos=self.pos,
