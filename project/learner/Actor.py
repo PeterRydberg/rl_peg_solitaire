@@ -15,3 +15,14 @@ class Actor:
 
     def initialize_actor(self):
         pass
+
+    def update_eligibilities(self, current_state, update_state):
+        if(current_state == update_state):
+            self.eligibilities[update_state] = 1
+        else:
+            self.eligibilities[update_state] = self.discount_factor * \
+                self.eligibility_decay * self.eligibilities[update_state]
+
+    def reset_elegibilities(self):
+        for i in self.eligibilities:
+            self.eligibilities[i] = 1

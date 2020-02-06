@@ -2,6 +2,8 @@ from .Actor import Actor
 from .Critic import Critic
 from game.PegGame import PegGame
 
+import itertools
+
 
 class ReinforcementLearner:
     def __init__(
@@ -35,6 +37,10 @@ class ReinforcementLearner:
         # Iterate through all episodes
         for episode in range(self.episodes):
 
+            # Reset all eligibilities before episode
+            self.critic.reset_elegibilities()
+            self.actor.reset_elegibilities()
+
             # Initializes new game using game settings
             currentGame = PegGame(
                 self.game_settings["board_type"],
@@ -45,11 +51,23 @@ class ReinforcementLearner:
                 f'Episode {episode + 1}'
             )
 
-            initial_board_state = currentGame.get_board_state()
+            initial_board_state = self.convert_flat_state_string(
+                currentGame.get_board_state()
+                )
             initial_legal_moves = currentGame.get_legal_moves()
             self.critic.update_eligibilities(
-                                            initial_board_state,
-                                            initial_legal_moves
+                                            current_state=initial_board_state,
+                                            update_state=initial_board_state
                                             )
+            print(self.critic.eligibilities)
 
-            currentGame.try_move((3, 3), 4)
+    # Converts the Peghole object state to bitstring (label)
+    def convert_flat_state_string(self, board_state):
+        state_string = ""
+        for peghole in list(itertools.chain(*board_state)):
+            if(peghole.content == "filled"):
+                state_string += "1"
+            elif(peghole.content == "empty"):
+                state_string += "0"
+
+        return state_string
