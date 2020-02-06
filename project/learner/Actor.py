@@ -32,7 +32,7 @@ class Actor:
             self.eligibilities[i] = 1
 
     def make_move(self):
-        if(random.uniform(0, 1) > 1 - self.e_greediness):
+        if(random.uniform(0, 1) < 1 - self.e_greediness):
             return max(self.policy, key=(lambda key: self.policy[key]))
         else:
             return random.choice(list(self.policy.keys()))
