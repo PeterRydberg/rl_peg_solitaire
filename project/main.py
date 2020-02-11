@@ -3,6 +3,8 @@ from learner.ReinforcementLearner import ReinforcementLearner
 
 def main():
 
+    # See README.md for explanation of all settings
+
     game_settings = {
         "board_type": "triangle",
         "board_size": 6,

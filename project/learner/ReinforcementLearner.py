@@ -50,19 +50,23 @@ class ReinforcementLearner:
                 f'Episode {episode + 1}'
             )
 
-            initial_board_state = self.convert_flat_state_string(
-                    currentGame.get_board_state()
-                )
-            initial_legal_moves = currentGame.get_legal_moves()
+            board_state = self.convert_flat_state_string(
+                currentGame.get_board_state()
+            )
+            legal_moves = currentGame.get_legal_moves()
 
             self.critic.update_eligibilities(
-                current_state=initial_board_state,
-                update_state=initial_board_state
+                current_state=board_state,
+                update_state=board_state
             )
             self.actor.update_eligibilities(
-                current_state=initial_board_state,
-                update_state=initial_board_state
+                current_state=board_state,
+                update_state=board_state
             )
+
+            while legal_moves:
+                # Do things
+                pass
 
     def init_actor_critic(self):
         game_structure = PegGame(
@@ -72,7 +76,13 @@ class ReinforcementLearner:
         )
 
         # TODO: Function in PegGame for returning all possible states
+        all_states = game_structure.get_board_state_permutations()
+        label_states = list(map(
+            lambda x: self.convert_flat_state_string(x), all_states
+            ))
         # TODO: Function in PegGame for returning all possible SAP
+
+        print(label_states)
 
         self.critic.initialize_critic()
         self.actor.initialize_actor()
