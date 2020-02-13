@@ -1,6 +1,5 @@
 from .Board import Board
 from enum import Enum
-import itertools
 
 
 class PegGame:
@@ -83,30 +82,38 @@ class PegGame:
                         legal_moves.append(((r, c), self.directions(i).name))
         return legal_moves
 
-    # Gets all possible board state permutations
-    def get_board_state_permutations(self):
-        states = []
-        pegholes = list(itertools.chain(*self.board.board_content))
+    # Shows graph on demand
+    def show_graph(self):
+        self.board.board_graph.show_graph(self.game_name)
 
-        def permutations(states, pegholes, current_permutation=[]):
-            #current_permutation = pegholes
-            if(len(pegholes) <= 1):
-                current_permutation
-                states.append(current_permutation)
-                pegholes[0].content = "empty"
-                states.append(current_permutation)
-            else:
-                for i in range(len(pegholes)):
-                    permutation_copy = current_permutation
-                    sub_array = pegholes[:i] + pegholes[i + 1:]
+    # Updates graph
+    def update_graph(self):
+        self.board.board_graph.live_update_graph(self.game_name)
 
-                    peghole.content = "filled"
-                    #permutation_copy[i] = peghole
-                    permutations(states, sub_array, current_permutation)
-
-                    peghole.content = "empty"
-                    #permutation_copy[i] = peghole
-                    permutations(states, sub_array, current_permutation)
+#    # Gets all possible board state permutations
+#    def get_board_state_permutations(self):
+#        states = []
+#        pegholes = list(itertools.chain(*self.board.board_content))
+#
+#        def permutations(states, pegholes, current_permutation=[]):
+#            #current_permutation = pegholes
+#            if(len(pegholes) <= 1):
+#                current_permutation
+#                states.append(current_permutation)
+#                pegholes[0].content = "empty"
+#                states.append(current_permutation)
+#            else:
+#                for i in range(len(pegholes)):
+#                    permutation_copy = current_permutation
+#                    sub_array = pegholes[:i] + pegholes[i + 1:]
+#
+#                    peghole.content = "filled"
+#                    #permutation_copy[i] = peghole
+#                    permutations(states, sub_array, current_permutation)
+#
+#                    peghole.content = "empty"
+#                    #permutation_copy[i] = peghole
+#                    permutations(states, sub_array, current_permutation)
 
 #        def permutations(states, pegholes, step=0):
 #            if(step == len(pegholes)):
@@ -118,8 +125,8 @@ class PegGame:
 #                pegholes_copy[i].content = "empty"
 #                permutations(states, pegholes_copy, step + 1)
 #
-        permutations(states, pegholes)
-        return states
+#        permutations(states, pegholes)
+#        return states
 
 #                for i in range(step, len(pegholes)):
 #                    state = []
@@ -131,17 +138,9 @@ class PegGame:
 #                        state.append(state)
 #                    states.append(state)
 
-    # Gets all possible state action pair permutations
-    def get_state_action_permutations(self):
-        pass
-
-    # Shows graph on demand
-    def show_graph(self):
-        self.board.board_graph.show_graph(self.game_name)
-
-    # Updates graph
-    def update_graph(self):
-        self.board.board_graph.live_update_graph(self.game_name)
+#    # Gets all possible state action pair permutations
+#    def get_state_action_permutations(self):
+#        pass
 
 
 # Legal directions for triangle boards
