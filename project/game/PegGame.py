@@ -32,39 +32,41 @@ class PegGame:
             self.directions = DirectionsDiamond
 
     # Move attempt function
-    def try_move(self, peghole_index, direction_name):
+    def try_move(self, move):
+        peghole_index, direction_name = move
         legal_moves = self.get_legal_moves()
-        direction = self.directions[direction_name].value
         peghole = self.board.board_content[peghole_index[0]][peghole_index[1]]
+        direction = self.directions[direction_name].value
+
+        def make_move(move):
+            (peghole, direction) = move
+
+            # Updates pegs to be changed for clear visuals
+            if(self.display_game):
+                peghole.content = "selected"
+                peghole.neighbors[direction].content = "jump"
+                self.update_graph()
+
+            # Actually moves the pegs
+            peghole.content = "empty"
+            peghole.neighbors[direction].content = "empty"
+            peghole.neighbors[direction].neighbors[direction].content = \
+                "filled"
+
+            if(self.display_game):
+                self.update_graph()
 
         # If there are legal moves and the one chosen is legal
-        if(legal_moves and (peghole, direction_name) in legal_moves):
-            self.make_move((peghole, direction))
+        if(legal_moves and (peghole, direction) in legal_moves):
+            make_move((peghole, direction))
 
-        return (self.board.board_content, self.get_legal_moves())
-
-    def make_move(self, move):
-        (peghole, direction) = move
-
-        # Updates pegs to be changed for clear visuals
-        if(self.display_game):
-            peghole.content = "selected"
-            peghole.neighbors[direction].content = "jump"
-            self.update_graph()
-
-        # Actually moves the pegs
-        peghole.content = "empty"
-        peghole.neighbors[direction].content = "empty"
-        peghole.neighbors[direction].neighbors[direction].content = "filled"
-
-        if(self.display_game):
-            self.update_graph()
+        return (self.board.board_content, self.get_legal_moves(True))
 
     def get_board_state(self):
         return self.board.board_content
 
     # Returns all legal moves for the current board state
-    def get_legal_moves(self):
+    def get_legal_moves(self, simplified=False):
         legal_moves = []
         for r, row in enumerate(self.board.board_content):
             for c, peghole in enumerate(row):
@@ -79,7 +81,15 @@ class PegGame:
                         and
                         neighbor.neighbors[i].content == "empty"
                     ):
-                        legal_moves.append(((r, c), self.directions(i).name))
+                        if(simplified):
+                            legal_moves.append(
+                                ((r, c), self.directions(i).name)
+                                )
+                        else:
+                            legal_moves.append(
+                                (peghole, self.directions(i).value)
+                            )
+
         return legal_moves
 
     # Shows graph on demand

@@ -31,7 +31,7 @@ class ReinforcementLearner:
                             )
 
     def train_model(self):
-        self.init_actor_critic()
+        # self.init_actor_critic()
 
         # Iterate through all episodes
         for episode in range(self.episodes):
@@ -53,20 +53,27 @@ class ReinforcementLearner:
             board_state = self.convert_flat_state_string(
                 currentGame.get_board_state()
             )
-            legal_moves = currentGame.get_legal_moves()
-
-            self.critic.update_eligibilities(
-                current_state=board_state,
-                update_state=board_state
-            )
-            self.actor.update_eligibilities(
-                current_state=board_state,
-                update_state=board_state
-            )
+            legal_moves = currentGame.get_legal_moves(True)
 
             while legal_moves:
-                # Do things
-                pass
+                # Add the board state and actions if not in policy
+                if(board_state not in self.actor.policy.keys()):
+                    self.actor.update_policy(board_state, legal_moves)
+
+                # Update elegibility for the current board state
+                self.critic.update_eligibilities(
+                    current_state=board_state,
+                    update_state=board_state
+                )
+                self.actor.update_eligibilities(
+                    current_state=board_state,
+                    update_state=board_state
+                )
+
+                # Get the next move
+                move = self.actor.get_move(board_state)
+                board_state, legal_moves = currentGame.try_move(move)
+                board_state = self.convert_flat_state_string(board_state)
 
     def init_actor_critic(self):
         game_structure = PegGame(
