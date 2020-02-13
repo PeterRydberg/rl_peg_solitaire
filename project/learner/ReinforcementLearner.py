@@ -55,6 +55,18 @@ class ReinforcementLearner:
             )
             legal_moves = currentGame.get_legal_moves(True)
 
+            # Initial elegibility update for the current board state
+            self.critic.update_eligibilities(
+                state=board_state,
+                decay=False
+            )
+            for action in legal_moves:
+                self.actor.update_eligibilities(
+                    state=board_state,
+                    action=action,
+                    decay=False
+                )
+
             while legal_moves:
                 # Add the board state and actions if not in policy
                 if(board_state not in self.actor.policy.keys()):
@@ -63,22 +75,12 @@ class ReinforcementLearner:
                 if(board_state not in self.critic.values.keys()):
                     self.critic.add_state_value(board_state)
 
-                # Update elegibility for the current board state
-                self.critic.update_eligibilities(
-                    state=board_state,
-                    decay=False
-                )
-                self.actor.update_eligibilities(
-                    state=board_state,
-                    decay=False
-                )
-
                 # Get and make the next move
                 prev_state = board_state
-                prev_move = self.actor.get_move(board_state)
+                prev_action = self.actor.get_move(board_state)
+                result = currentGame.try_move(prev_action)
 
                 # Parse move result
-                result = currentGame.try_move(prev_move)
                 reward, board_state, legal_moves = result
                 board_state = self.convert_flat_state_string(board_state)
 
@@ -89,12 +91,32 @@ class ReinforcementLearner:
                     prev_state
                 )
 
-                # Updates critic values, actor policy and elegibilities
-                self.value_policy_update(prev_state, temporal_diff)
+                # Update elegibility for the board state used
+                self.critic.update_eligibilities(
+                    state=prev_state,
+                    decay=False
+                )
+                self.actor.update_eligibilities(
+                    state=prev_state,
+                    action=prev_action,
+                    decay=False
+                )
 
-    def value_policy_update(self, prev_state, temporal_diff):
+                # Updates critic values, actor policy and elegibilities
+                self.value_policy_update(
+                    prev_state,
+                    prev_action,
+                    temporal_diff
+                )
+
+    def value_policy_update(self, prev_state, prev_action, temporal_diff):
+        # Update critic values and critic eligibility
         self.critic.update_state_value(prev_state, temporal_diff)
         self.critic.update_eligibilities(prev_state, True)
+
+        # Update critic values and critic eligibility
+        self.actor.update_sap_policy(prev_state, prev_action, temporal_diff)
+        self.actor.update_eligibilities(prev_state, prev_action, True)
 
     def init_actor_critic(self):
         game_structure = PegGame(

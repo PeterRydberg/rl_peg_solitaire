@@ -25,21 +25,16 @@ class Actor:
         self.policy[current_state] = {}
 
         for legal_move in legal_moves:
-            self.policy[current_state][legal_move] = 0
+            self.policy[current_state] = {legal_move: 0}
 
-    # Updates eligibilities
-    def update_eligibilities(self, state, decay=False):
-        if(not decay):
-            self.eligibilities[state] = 1
-        else:
-            self.eligibilities[state] = self.discount_factor * \
-                self.eligibility_decay * self.eligibilities[state]
+    # Updates state and actions policy
+    def update_sap_policy(self, state, action, temporal_diff):
+        self.policy[state][action] += \
+            self.learning_rate * \
+            temporal_diff * \
+            self.eligibilities[state][action]
 
-    # Reset all elegibilities
-    def reset_elegibilities(self):
-        for i in self.eligibilities:
-            self.eligibilities[i] = 1
-
+    # Gets the new move for current state
     def get_move(self, current_state):
         # Uses e-greediness to determine best or random move
         if(random.uniform(0, 1) < 1 - self.e_greediness):
@@ -47,7 +42,28 @@ class Actor:
             return max(
                 self.policy[current_state],
                 key=(lambda key: self.policy[current_state][key])
-                )
+            )
         else:
             # Returns a random move
             return random.choice(list(self.policy[current_state].keys()))
+
+    # Updates eligibilities
+    def update_eligibilities(self, state, action, decay=False):
+        # If the state does is not initialized
+        if(state not in self.eligibilities.keys()):
+            self.eligibilities[state] = {}
+
+        # Check whether to decay or set to 1
+        if(not decay):
+            self.eligibilities[state][action] = 1
+        else:
+            self.eligibilities[state][action] = \
+                self.discount_factor * \
+                self.eligibility_decay * \
+                self.eligibilities[state][action]
+
+    # Reset all elegibilities
+    def reset_elegibilities(self):
+        for state in self.eligibilities:
+            for action in state:
+                self.eligibilities[state][action] = 0

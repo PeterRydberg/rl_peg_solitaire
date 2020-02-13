@@ -46,13 +46,16 @@ class Critic:
 
     # Updates elegibilities
     def update_eligibilities(self, state, decay=False):
+        # Check whether to decay or set to 1
         if(not decay):
             self.eligibilities[state] = 1
         else:
-            self.eligibilities[state] = self.discount_factor * \
-                self.eligibility_decay * self.eligibilities[state]
+            self.eligibilities[state] = \
+                self.discount_factor * \
+                self.eligibility_decay * \
+                self.eligibilities[state]
 
     # Reset all elegibilities
     def reset_elegibilities(self):
         for i in self.eligibilities:
-            self.eligibilities[i] = 1
+            self.eligibilities[i] = 0
