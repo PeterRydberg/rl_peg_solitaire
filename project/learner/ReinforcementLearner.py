@@ -65,12 +65,12 @@ class ReinforcementLearner:
 
                 # Update elegibility for the current board state
                 self.critic.update_eligibilities(
-                    current_state=board_state,
-                    update_state=board_state
+                    state=board_state,
+                    decay=False
                 )
                 self.actor.update_eligibilities(
-                    current_state=board_state,
-                    update_state=board_state
+                    state=board_state,
+                    decay=False
                 )
 
                 # Get and make the next move
@@ -88,7 +88,13 @@ class ReinforcementLearner:
                     board_state,
                     prev_state
                 )
-                print(temporal_diff)
+
+                # Updates critic values, actor policy and elegibilities
+                self.value_policy_update(prev_state, temporal_diff)
+
+    def value_policy_update(self, prev_state, temporal_diff):
+        self.critic.update_state_value(prev_state, temporal_diff)
+        self.critic.update_eligibilities(prev_state, True)
 
     def init_actor_critic(self):
         game_structure = PegGame(

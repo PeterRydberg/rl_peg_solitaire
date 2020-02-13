@@ -28,12 +28,12 @@ class Actor:
             self.policy[current_state][legal_move] = 0
 
     # Updates eligibilities
-    def update_eligibilities(self, current_state, update_state):
-        if(current_state == update_state):
-            self.eligibilities[update_state] = 1
+    def update_eligibilities(self, state, decay=False):
+        if(not decay):
+            self.eligibilities[state] = 1
         else:
-            self.eligibilities[update_state] = self.discount_factor * \
-                self.eligibility_decay * self.eligibilities[update_state]
+            self.eligibilities[state] = self.discount_factor * \
+                self.eligibility_decay * self.eligibilities[state]
 
     # Reset all elegibilities
     def reset_elegibilities(self):

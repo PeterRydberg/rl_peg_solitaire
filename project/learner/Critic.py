@@ -26,6 +26,14 @@ class Critic:
     def add_state_value(self, current_state):
         self.values[current_state] = random.uniform(0, 0.1)
 
+    # Updates state value
+    def update_state_value(self, state, temporal_diff):
+        self.values[state] += \
+            self.learning_rate * \
+            temporal_diff * \
+            self.eligibilities[state]
+
+    # Calculates temporal difference for the new state
     def calc_temp_diff(self, reward, current_state, previous_state):
         # Add the board state if not in values
         if(current_state not in self.values.keys()):
@@ -36,13 +44,15 @@ class Critic:
             (self.discount_factor * self.values[current_state]) - \
             self.values[previous_state]
 
-    def update_eligibilities(self, current_state, update_state):
-        if(current_state == update_state):
-            self.eligibilities[update_state] = 1
+    # Updates elegibilities
+    def update_eligibilities(self, state, decay=False):
+        if(not decay):
+            self.eligibilities[state] = 1
         else:
-            self.eligibilities[update_state] = self.discount_factor * \
-                self.eligibility_decay * self.eligibilities[update_state]
+            self.eligibilities[state] = self.discount_factor * \
+                self.eligibility_decay * self.eligibilities[state]
 
+    # Reset all elegibilities
     def reset_elegibilities(self):
         for i in self.eligibilities:
             self.eligibilities[i] = 1
