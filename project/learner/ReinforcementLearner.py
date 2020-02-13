@@ -58,7 +58,10 @@ class ReinforcementLearner:
             while legal_moves:
                 # Add the board state and actions if not in policy
                 if(board_state not in self.actor.policy.keys()):
-                    self.actor.update_policy(board_state, legal_moves)
+                    self.actor.add_sap_policy(board_state, legal_moves)
+                # Add the board state if not in values
+                if(board_state not in self.critic.values.keys()):
+                    self.critic.add_state_value(board_state)
 
                 # Update elegibility for the current board state
                 self.critic.update_eligibilities(
@@ -70,12 +73,22 @@ class ReinforcementLearner:
                     update_state=board_state
                 )
 
-                # Get the next move
-                move = self.actor.get_move(board_state)
-                print(legal_moves)
-                print(move)
-                board_state, legal_moves = currentGame.try_move(move)
+                # Get and make the next move
+                prev_state = board_state
+                prev_move = self.actor.get_move(board_state)
+
+                # Parse move result
+                result = currentGame.try_move(prev_move)
+                reward, board_state, legal_moves = result
                 board_state = self.convert_flat_state_string(board_state)
+
+                # Update critic temporal difference
+                temporal_diff = self.critic.calc_temp_diff(
+                    reward,
+                    board_state,
+                    prev_state
+                )
+                print(temporal_diff)
 
     def init_actor_critic(self):
         game_structure = PegGame(

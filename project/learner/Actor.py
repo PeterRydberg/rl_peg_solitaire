@@ -21,7 +21,7 @@ class Actor:
         pass
 
     # Adds new state and actions policy
-    def update_policy(self, current_state, legal_moves):
+    def add_sap_policy(self, current_state, legal_moves):
         self.policy[current_state] = {}
 
         for legal_move in legal_moves:
