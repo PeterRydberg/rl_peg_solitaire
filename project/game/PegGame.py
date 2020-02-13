@@ -73,9 +73,11 @@ class PegGame:
                 for i, neighbor in enumerate(peghole.neighbors):
                     # If possible direct jump over adjacent node
                     if(
+                        peghole.content != "empty"
+                        and
                         neighbor
                         and
-                        neighbor.content != "empty"
+                        neighbor.content == "filled"
                         and
                         neighbor.neighbors[i]
                         and

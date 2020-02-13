@@ -72,6 +72,8 @@ class ReinforcementLearner:
 
                 # Get the next move
                 move = self.actor.get_move(board_state)
+                print(legal_moves)
+                print(move)
                 board_state, legal_moves = currentGame.try_move(move)
                 board_state = self.convert_flat_state_string(board_state)
 

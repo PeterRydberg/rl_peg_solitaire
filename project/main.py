@@ -9,7 +9,7 @@ def main():
         "board_type": "triangle",
         "board_size": 6,
         "initial_empty": {},
-        "live_update_frequency": 0.5,
+        "live_update_frequency": 2,
         "display_game": (1, 50, 500)
     }
 
