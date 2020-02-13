@@ -7,12 +7,14 @@ class Actor:
         learning_rate,
         eligibility_decay,
         discount_factor,
-        e_greediness
+        e_greediness,
+        episodes
     ):
         self.learning_rate = learning_rate
         self.eligibility_decay = eligibility_decay
         self.discount_factor = discount_factor
         self.e_greediness = e_greediness
+        self.e_greediness_decrease = e_greediness / episodes
 
         self.eligibilities = {}
         self.policy = {}
@@ -21,11 +23,11 @@ class Actor:
         pass
 
     # Adds new state and actions policy
-    def add_sap_policy(self, current_state, legal_moves):
-        self.policy[current_state] = {}
+    def add_sap_policy(self, state, action):
+        if(state not in self.policy.keys()):
+            self.policy[state] = {}
 
-        for legal_move in legal_moves:
-            self.policy[current_state] = {legal_move: 0}
+        self.policy[state][action] = 0
 
     # Updates state and actions policy
     def update_sap_policy(self, state, action, temporal_diff):
@@ -67,3 +69,8 @@ class Actor:
         for state in self.eligibilities:
             for action in state:
                 self.eligibilities[state][action] = 0
+
+    # Decrease greediness episodically, eventually zero
+    def increase_greediness(self, episodes):
+        print(self.e_greediness)
+        self.e_greediness -= self.e_greediness_decrease

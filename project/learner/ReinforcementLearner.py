@@ -27,7 +27,8 @@ class ReinforcementLearner:
                             actor_settings["a_learning_rate"],
                             actor_settings["a_eligibility_decay"],
                             actor_settings["a_discount_factor"],
-                            actor_settings["a_e_greediness"]
+                            actor_settings["a_e_greediness"],
+                            episodes
                             )
 
     def train_model(self):
@@ -68,7 +69,8 @@ class ReinforcementLearner:
             while legal_moves:
                 # Add the board state and actions if not in policy
                 if(board_state not in self.actor.policy.keys()):
-                    self.actor.add_sap_policy(board_state, legal_moves)
+                    for action in legal_moves:
+                        self.actor.add_sap_policy(board_state, action)
                 # Add the board state if not in values
                 if(board_state not in self.critic.values.keys()):
                     self.critic.add_state_value(board_state)
@@ -106,6 +108,7 @@ class ReinforcementLearner:
                     prev_action,
                     temporal_diff
                 )
+            self.actor.increase_greediness(self.episodes)
 
     def value_policy_update(self, prev_state, prev_action, temporal_diff):
         # Update critic values and critic eligibility

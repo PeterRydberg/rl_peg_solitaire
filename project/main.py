@@ -25,7 +25,7 @@ def main():
         "a_learning_rate": 0.1,
         "a_eligibility_decay": 0.05,
         "a_discount_factor": 0.05,
-        "a_e_greediness": 0.35
+        "a_e_greediness": 0.5
     }
 
     try:

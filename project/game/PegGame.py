@@ -61,7 +61,7 @@ class PegGame:
             make_move((peghole, direction))
 
         return ((
-            self.get_reward(),
+            self.get_reward(fixed_reward=False),
             self.board.board_content,
             self.get_legal_moves(True)
         ))
@@ -99,12 +99,19 @@ class PegGame:
         return legal_moves
 
     # Calculates reward based on amount of pegs left
-    def get_reward(self):
-        reward = 0
-        for row in self.board.board_content:
-            for peghole in row:
-                reward += 1 if peghole.content == "empty" else 0
-        return reward
+    def get_reward(self, fixed_reward=True):
+        if(fixed_reward):
+            amount = 0
+            for row in self.board.board_content:
+                for peghole in row:
+                    amount += 1 if peghole.content == "empty" else 0
+            return 1000 if amount == 1 else 0
+        else:
+            reward = 0
+            for row in self.board.board_content:
+                for peghole in row:
+                    reward += 10 if peghole.content == "empty" else 0
+            return reward
 
     # Shows graph on demand
     def show_graph(self):
