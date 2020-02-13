@@ -72,5 +72,4 @@ class Actor:
 
     # Decrease greediness episodically, eventually zero
     def increase_greediness(self, episodes):
-        print(self.e_greediness)
         self.e_greediness -= self.e_greediness_decrease
