@@ -139,9 +139,10 @@ class Board:
     def get_center(self):
         x = 2
         y = 4 if(self.board_type == 'triangle') else 2
+        shift = 1 if self.height % 2 == 0 else 0
         return {
             (
                 math.floor(self.height / x),
-                math.floor(self.height / y)
+                math.floor(self.height / y) - shift
             )
         }
