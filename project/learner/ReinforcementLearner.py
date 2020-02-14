@@ -34,37 +34,8 @@ class ReinforcementLearner:
     def train_model(self):
         # Iterate through all episodes
         for episode in range(self.episodes):
-
-            # Reset all eligibilities before episode
-            self.critic.reset_elegibilities()
-            self.actor.reset_elegibilities()
-
-            # Initializes new game using game settings
-            currentGame = PegGame(
-                self.game_settings["board_type"],
-                self.game_settings["board_size"],
-                self.game_settings["initial_empty"],
-                self.game_settings["live_update_frequency"],
-                (episode + 1) in self.game_settings["display_game"],
-                f'Episode {episode + 1}'
-            )
-
-            board_state = self.convert_flat_state_string(
-                currentGame.get_board_state()
-            )
-            legal_moves = currentGame.get_legal_moves(True)
-
-            # Initial elegibility update for the current board state
-            self.critic.update_eligibilities(
-                state=board_state,
-                decay=False
-            )
-            for action in legal_moves:
-                self.actor.update_eligibilities(
-                    state=board_state,
-                    action=action,
-                    decay=False
-                )
+            currentGame, board_state, legal_moves = self.init_game(episode)
+            self.init_eligibilities(board_state, legal_moves)
 
             while legal_moves:
                 # Add the board state and actions if not in policy
@@ -129,6 +100,42 @@ class ReinforcementLearner:
                 state_string += "0"
 
         return state_string
+
+    def init_game(self, episode):
+        # Initializes new game using game settings
+        currentGame = PegGame(
+            self.game_settings["board_type"],
+            self.game_settings["board_size"],
+            self.game_settings["initial_empty"],
+            self.game_settings["live_update_frequency"],
+            (episode + 1) in self.game_settings["display_game"],
+            f'Episode {episode + 1}'
+        )
+
+        # Gets initial board and move states
+        board_state = self.convert_flat_state_string(
+            currentGame.get_board_state()
+        )
+        legal_moves = currentGame.get_legal_moves(True)
+
+        return currentGame, board_state, legal_moves
+
+    def init_eligibilities(self, board_state, legal_moves):
+        # Reset all eligibilities before episode
+        self.critic.reset_elegibilities()
+        self.actor.reset_elegibilities()
+
+        # Initial elegibility update for the current board state
+        self.critic.update_eligibilities(
+            state=board_state,
+            decay=False
+        )
+        for action in legal_moves:
+            self.actor.update_eligibilities(
+                state=board_state,
+                action=action,
+                decay=False
+            )
 
     # Runs a single game using greedy on-policy strategy
     def run_game(self):

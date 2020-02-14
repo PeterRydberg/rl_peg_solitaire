@@ -15,21 +15,21 @@ tri_5_table = {
     "critic_settings": {
         "c_type": "table",
         "c_learning_rate": 0.1,
-        "c_eligibility_decay": 0.05,
-        "c_discount_factor": 0.05,
+        "c_eligibility_decay": 0.99,
+        "c_discount_factor": 0.99,
         "c_nn_layers": (1, 2, 3)
     },
 
     "actor_settings": {
         "a_learning_rate": 0.1,
-        "a_eligibility_decay": 0.05,
-        "a_discount_factor": 0.05,
+        "a_eligibility_decay": 0.99,
+        "a_discount_factor": 0.99,
         "a_e_greediness": 0.5
     }
 }
 
 diam_4_table = {
-    "episodes": 500,
+    "episodes": 1000,
 
     "game_settings": {
         "board_type": "diamond",
@@ -42,15 +42,15 @@ diam_4_table = {
     "critic_settings": {
         "c_type": "table",
         "c_learning_rate": 0.1,
-        "c_eligibility_decay": 0.05,
-        "c_discount_factor": 0.05,
+        "c_eligibility_decay": 0.99,
+        "c_discount_factor": 0.99,
         "c_nn_layers": (1, 2, 3)
     },
 
     "actor_settings": {
         "a_learning_rate": 0.1,
-        "a_eligibility_decay": 0.05,
-        "a_discount_factor": 0.05,
+        "a_eligibility_decay": 0.99,
+        "a_discount_factor": 0.99,
         "a_e_greediness": 0.5
     }
 }
