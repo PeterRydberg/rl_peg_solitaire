@@ -36,6 +36,7 @@ class ReinforcementLearner:
         for episode in range(self.episodes):
             currentGame, board_state, legal_moves = self.init_game(episode)
             self.init_eligibilities(board_state, legal_moves)
+            actions_taken = []
 
             while legal_moves:
                 # Add the board state and actions if not in policy
@@ -55,13 +56,6 @@ class ReinforcementLearner:
                 reward, board_state, legal_moves = result
                 board_state = self.convert_flat_state_string(board_state)
 
-                # Update critic temporal difference
-                temporal_diff = self.critic.calc_temp_diff(
-                    reward,
-                    board_state,
-                    prev_state
-                )
-
                 # Update elegibility for the board state used
                 self.critic.update_eligibilities(
                     state=prev_state,
@@ -73,22 +67,32 @@ class ReinforcementLearner:
                     decay=False
                 )
 
+                # Update critic temporal difference
+                temporal_diff = self.critic.calc_temp_diff(
+                    reward,
+                    board_state,
+                    prev_state
+                )
+
+                actions_taken.append((prev_state, prev_action))
+
                 # Updates critic values, actor policy and elegibilities
+                # for each state action pair
                 self.value_policy_update(
-                    prev_state,
-                    prev_action,
+                    actions_taken,
                     temporal_diff
                 )
             self.actor.increase_greediness(self.episodes)
 
-    def value_policy_update(self, prev_state, prev_action, temporal_diff):
-        # Update critic values and critic eligibility
-        self.critic.update_state_value(prev_state, temporal_diff)
-        self.critic.update_eligibilities(prev_state, True)
+    def value_policy_update(self, actions, temporal_diff):
+        for state, action in actions:
+            # Update critic values and critic eligibility
+            self.critic.update_state_value(state, temporal_diff)
+            self.critic.update_eligibilities(state, True)
 
-        # Update critic values and critic eligibility
-        self.actor.update_sap_policy(prev_state, prev_action, temporal_diff)
-        self.actor.update_eligibilities(prev_state, prev_action, True)
+            # Update critic values and critic eligibility
+            self.actor.update_sap_policy(state, action, temporal_diff)
+            self.actor.update_eligibilities(state, action, True)
 
     # Converts the Peghole object state to bitstring (label)
     def convert_flat_state_string(self, board_state):
