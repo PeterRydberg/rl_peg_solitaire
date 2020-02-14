@@ -1,9 +1,9 @@
 from learner.ReinforcementLearner import ReinforcementLearner
-from learner_settings import tri_5_table, diam_4_table
+from learner_settings import tri_5_table, diam_4_table, tri_5_ann, diam_4_ann
 
 
 def main():
-    settings = diam_4_table
+    settings = tri_5_ann
 
     try:
         # Creates and trains model
