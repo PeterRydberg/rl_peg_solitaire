@@ -78,7 +78,7 @@ class ReinforcementLearner:
                 # Get and make the next move
                 prev_state = board_state
                 prev_action = self.actor.get_move(board_state)
-                result = currentGame.try_move(prev_action)
+                result = currentGame.try_move(prev_action, return_reward=True)
 
                 # Parse move result
                 reward, board_state, legal_moves = result
@@ -129,3 +129,30 @@ class ReinforcementLearner:
                 state_string += "0"
 
         return state_string
+
+    # Runs a single game using greedy on-policy strategy
+    def run_game(self):
+        self.actor.set_greedy()  # Makes actor fully greedy
+
+        game = PegGame(
+            self.game_settings["board_type"],
+            self.game_settings["board_size"],
+            self.game_settings["initial_empty"],
+            self.game_settings["live_update_frequency"],
+            True,
+            f'Peg solitaire'
+        )
+
+        board_state = self.convert_flat_state_string(
+            game.get_board_state()
+        )
+        legal_moves = game.get_legal_moves(True)
+
+        while legal_moves:
+            # Get and make the next move
+            action = self.actor.get_move(board_state)
+            result = game.try_move(action, return_reward=False)
+
+            # Parse move result
+            board_state, legal_moves = result
+            board_state = self.convert_flat_state_string(board_state)

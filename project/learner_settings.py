@@ -2,7 +2,7 @@
 
 
 tri_5_table = {
-    "episodes": 500,
+    "episodes": 1000,
 
     "game_settings": {
         "board_type": "triangle",

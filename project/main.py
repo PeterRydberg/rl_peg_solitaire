@@ -3,9 +3,10 @@ from learner_settings import tri_5_table, diam_4_table
 
 
 def main():
-    settings = diam_4_table
+    settings = tri_5_table
 
     try:
+        # Creates and trains model
         rl_learner = ReinforcementLearner(
             episodes=settings["episodes"],
             game_settings=settings["game_settings"],
@@ -13,6 +14,9 @@ def main():
             actor_settings=settings["actor_settings"]
         )
         rl_learner.train_model()
+
+        # Makes a test run
+        rl_learner.run_game()
     except ValueError as e:
         print(str(e))
 

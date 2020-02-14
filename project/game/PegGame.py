@@ -32,7 +32,7 @@ class PegGame:
             self.directions = DirectionsDiamond
 
     # Move attempt function
-    def try_move(self, move):
+    def try_move(self, move, return_reward=False):
         peghole_index, direction_name = move
         legal_moves = self.get_legal_moves()
         peghole = self.board.board_content[peghole_index[0]][peghole_index[1]]
@@ -60,8 +60,15 @@ class PegGame:
         if(legal_moves and (peghole, direction) in legal_moves):
             make_move((peghole, direction))
 
+        # Returns with or without reward (for training purposes)
+        if(return_reward is True):
+            return ((
+                self.get_reward(fixed_reward=False),
+                self.board.board_content,
+                self.get_legal_moves(True)
+            ))
+
         return ((
-            self.get_reward(fixed_reward=False),
             self.board.board_content,
             self.get_legal_moves(True)
         ))

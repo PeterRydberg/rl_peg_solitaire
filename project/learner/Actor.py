@@ -73,3 +73,6 @@ class Actor:
     # Decrease greediness episodically, eventually zero
     def increase_greediness(self, episodes):
         self.e_greediness -= self.e_greediness_decrease
+
+    def set_greedy(self):
+        self.e_greediness = 0
