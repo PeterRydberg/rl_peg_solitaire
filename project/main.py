@@ -13,7 +13,10 @@ def main():
             critic_settings=settings["critic_settings"],
             actor_settings=settings["actor_settings"]
         )
-        rl_learner.train_model()
+        performance = rl_learner.train_model()
+
+        # Display performance graph
+        rl_learner.display_performance_graph(performance)
 
         # Makes a test run
         rl_learner.run_game()

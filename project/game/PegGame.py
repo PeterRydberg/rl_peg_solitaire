@@ -109,12 +109,10 @@ class PegGame:
     def get_reward(self, fixed_reward=True):
         legal_moves = self.get_legal_moves()
 
+        # If only goal is to end up with one peg
         if(fixed_reward and len(legal_moves) < 1):
-            amount = 0
-            for row in self.board.board_content:
-                for peghole in row:
-                    amount += 1 if peghole.content == "empty" else 0
-            return 5000 if amount == 1 else -5000
+            return 5000 if self.get_filled_holes() == 1 else -5000
+        # If goal is to reduce pegs throughout the game
         else:
             reward = 0
             for row in self.board.board_content:
@@ -122,6 +120,14 @@ class PegGame:
                     reward += 10 if peghole.content == "empty" else 0
             return reward
         return 0
+
+    # Returns the amount of filled holes on the board
+    def get_filled_holes(self):
+        amount = 0
+        for row in self.board.board_content:
+            for peghole in row:
+                amount += 1 if peghole.content == "filled" else 0
+        return amount
 
     # Shows graph on demand
     def show_graph(self):

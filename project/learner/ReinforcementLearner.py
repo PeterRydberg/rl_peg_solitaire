@@ -3,6 +3,7 @@ from .Critic import Critic
 from game.PegGame import PegGame
 
 import itertools
+import matplotlib.pyplot as plt
 
 
 class ReinforcementLearner:
@@ -32,6 +33,8 @@ class ReinforcementLearner:
                             )
 
     def train_model(self):
+        performance = []
+
         # Iterate through all episodes
         for episode in range(self.episodes):
             # Initializes the episode game
@@ -90,6 +93,10 @@ class ReinforcementLearner:
                 )
 
             self.actor.increase_greediness(self.episodes)
+            performance.append(current_game.get_filled_holes())
+
+        # Return training performance
+        return performance
 
     def value_policy_update(self, actions, temporal_diff):
         for state, action in actions:
@@ -151,6 +158,12 @@ class ReinforcementLearner:
                 action=action,
                 decay=False
             )
+
+    def display_performance_graph(self, performance):
+        plt.plot(performance)
+        plt.ylabel('Amount of pegs left')
+        plt.xlabel('Episode number')
+        plt.show()
 
     # Runs a single game using greedy on-policy strategy
     def run_game(self):
