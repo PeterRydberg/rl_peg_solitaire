@@ -85,7 +85,3 @@ class BoardGraph:
                     edges.append((peghole, neighbor))
 
         return edges
-
-    # TODO: Render graph at a fixed angle
-    # TODO: Render nodes with different colors depending on attributes
-    # TODO: Make the graph render live as game goes on
