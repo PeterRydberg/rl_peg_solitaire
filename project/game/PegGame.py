@@ -63,7 +63,7 @@ class PegGame:
         # Returns with or without reward (for training purposes)
         if(return_reward is True):
             return ((
-                self.get_reward(fixed_reward=False),
+                self.get_reward(fixed_reward=True),
                 self.board.board_content,
                 self.get_legal_moves(True)
             ))
@@ -107,18 +107,21 @@ class PegGame:
 
     # Calculates reward based on amount of pegs left
     def get_reward(self, fixed_reward=True):
-        if(fixed_reward):
+        legal_moves = self.get_legal_moves()
+
+        if(fixed_reward and len(legal_moves) < 1):
             amount = 0
             for row in self.board.board_content:
                 for peghole in row:
                     amount += 1 if peghole.content == "empty" else 0
-            return 1000 if amount == 1 else 0
+            return 1000 if amount == 1 else -1000
         else:
             reward = 0
             for row in self.board.board_content:
                 for peghole in row:
                     reward += 10 if peghole.content == "empty" else 0
             return reward
+        return 0
 
     # Shows graph on demand
     def show_graph(self):
