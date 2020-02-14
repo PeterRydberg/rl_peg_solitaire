@@ -9,7 +9,7 @@ tri_5_table = {
         "board_size": 5,
         "initial_empty": {},
         "live_update_frequency": 0.2,
-        "display_game": (1, 50, 500)
+        "display_game": ()  # (1, 50, 500)
     },
 
     "critic_settings": {
@@ -36,7 +36,7 @@ diam_4_table = {
         "board_size": 4,
         "initial_empty": {},
         "live_update_frequency": 0.2,
-        "display_game": (1, 50, 500)
+        "display_game": ()  # (1, 50, 500)
     },
 
     "critic_settings": {

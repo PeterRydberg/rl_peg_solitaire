@@ -34,7 +34,13 @@ class ReinforcementLearner:
     def train_model(self):
         # Iterate through all episodes
         for episode in range(self.episodes):
-            currentGame, board_state, legal_moves = self.init_game(episode)
+            # Initializes the episode game
+            current_game, board_state, legal_moves = self.init_game(
+                display_game=(episode+1) in self.game_settings["display_game"],
+                game_name=f'Episode {episode+1}'
+                )
+
+            # Initializes eligibilities at start of episode
             self.init_eligibilities(board_state, legal_moves)
             actions_taken = []
 
@@ -50,13 +56,13 @@ class ReinforcementLearner:
                 # Get and make the next move
                 prev_state = board_state
                 prev_action = self.actor.get_move(board_state)
-                result = currentGame.try_move(prev_action, return_reward=True)
+                result = current_game.try_move(prev_action, return_reward=True)
 
                 # Parse move result
                 reward, board_state, legal_moves = result
                 board_state = self.convert_flat_state_string(board_state)
 
-                # Update elegibility for the board state used
+                # Update eligibility for the board state used
                 self.critic.update_eligibilities(
                     state=prev_state,
                     decay=False
@@ -76,12 +82,13 @@ class ReinforcementLearner:
 
                 actions_taken.append((prev_state, prev_action))
 
-                # Updates critic values, actor policy and elegibilities
+                # Updates critic values, actor policy and eligibilities
                 # for each state action pair
                 self.value_policy_update(
                     actions_taken,
                     temporal_diff
                 )
+
             self.actor.increase_greediness(self.episodes)
 
     def value_policy_update(self, actions, temporal_diff):
@@ -105,31 +112,35 @@ class ReinforcementLearner:
 
         return state_string
 
-    def init_game(self, episode):
+    def init_game(
+        self,
+        display_game=False,
+        game_name="Peg solitaire"
+    ):
         # Initializes new game using game settings
-        currentGame = PegGame(
+        current_game = PegGame(
             self.game_settings["board_type"],
             self.game_settings["board_size"],
             self.game_settings["initial_empty"],
             self.game_settings["live_update_frequency"],
-            (episode + 1) in self.game_settings["display_game"],
-            f'Episode {episode + 1}'
+            display_game,
+            game_name
         )
 
         # Gets initial board and move states
         board_state = self.convert_flat_state_string(
-            currentGame.get_board_state()
+            current_game.get_board_state()
         )
-        legal_moves = currentGame.get_legal_moves(True)
+        legal_moves = current_game.get_legal_moves(True)
 
-        return currentGame, board_state, legal_moves
+        return current_game, board_state, legal_moves
 
     def init_eligibilities(self, board_state, legal_moves):
         # Reset all eligibilities before episode
-        self.critic.reset_elegibilities()
-        self.actor.reset_elegibilities()
+        self.critic.reset_eligibilities()
+        self.actor.reset_eligibilities()
 
-        # Initial elegibility update for the current board state
+        # Initial eligibility update for the current board state
         self.critic.update_eligibilities(
             state=board_state,
             decay=False
@@ -145,24 +156,16 @@ class ReinforcementLearner:
     def run_game(self):
         self.actor.set_greedy()  # Makes actor fully greedy
 
-        game = PegGame(
-            self.game_settings["board_type"],
-            self.game_settings["board_size"],
-            self.game_settings["initial_empty"],
-            self.game_settings["live_update_frequency"],
+        # Initializes the game
+        current_game, board_state, legal_moves = self.init_game(
             True,
-            f'Peg solitaire'
+            'Peg solitaire'
         )
-
-        board_state = self.convert_flat_state_string(
-            game.get_board_state()
-        )
-        legal_moves = game.get_legal_moves(True)
 
         while legal_moves:
             # Get and make the next move
             action = self.actor.get_move(board_state)
-            result = game.try_move(action, return_reward=False)
+            result = current_game.try_move(action, return_reward=False)
 
             # Parse move result
             board_state, legal_moves = result

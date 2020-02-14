@@ -64,8 +64,8 @@ class Actor:
                 self.eligibility_decay * \
                 self.eligibilities[state][action]
 
-    # Reset all elegibilities
-    def reset_elegibilities(self):
+    # Reset all eligibilities
+    def reset_eligibilities(self):
         for state in self.eligibilities:
             for action in state:
                 self.eligibilities[state][action] = 0

@@ -114,7 +114,7 @@ class PegGame:
             for row in self.board.board_content:
                 for peghole in row:
                     amount += 1 if peghole.content == "empty" else 0
-            return 1000 if amount == 1 else -1000
+            return 5000 if amount == 1 else -5000
         else:
             reward = 0
             for row in self.board.board_content:
