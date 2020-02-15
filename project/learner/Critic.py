@@ -9,7 +9,8 @@ class Critic:
         learning_rate,
         eligibility_decay,
         discount_factor,
-        nn_layers
+        nn_layers,
+        input_shape
     ):
         self.critic_type = critic_type
 
@@ -19,7 +20,11 @@ class Critic:
             )
         elif(self.critic_type == "ann"):
             self.evaluator = CriticAnn(
-                learning_rate, eligibility_decay, discount_factor, nn_layers
+                learning_rate,
+                eligibility_decay,
+                discount_factor,
+                nn_layers,
+                input_shape
             )
 
     # Adds new state value

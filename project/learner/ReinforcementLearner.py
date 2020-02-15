@@ -22,7 +22,8 @@ class ReinforcementLearner:
             critic_settings["c_learning_rate"],
             critic_settings["c_eligibility_decay"],
             critic_settings["c_discount_factor"],
-            critic_settings["c_nn_layers"]
+            critic_settings["c_nn_layers"],
+            self.get_board_shape()
         )
         self.actor = Actor(
             actor_settings["a_learning_rate"],
@@ -146,6 +147,17 @@ class ReinforcementLearner:
         plt.ylabel('Amount of pegs left')
         plt.xlabel('Episode number')
         plt.show()
+
+    def get_board_shape(self):
+        game = PegGame(
+            self.game_settings["board_type"],
+            self.game_settings["board_size"],
+            self.game_settings["initial_empty"],
+            self.game_settings["live_update_frequency"],
+            False,
+            None
+        )
+        return len(self.convert_flat_state_string(game.board.board_content))
 
     def init_game(
         self,

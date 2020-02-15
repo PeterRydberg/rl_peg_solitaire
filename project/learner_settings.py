@@ -71,7 +71,7 @@ tri_5_ann = {
         "c_learning_rate": 0.001,
         "c_eligibility_decay": 0.99,
         "c_discount_factor": 0.99,
-        "c_nn_layers": [1, 2, 3]
+        "c_nn_layers": [15, 20, 30, 5]
     },
 
     "actor_settings": {
@@ -98,7 +98,7 @@ diam_4_ann = {
         "c_learning_rate": 0.001,
         "c_eligibility_decay": 0.99,
         "c_discount_factor": 0.99,
-        "c_nn_layers": [1, 2, 3]
+        "c_nn_layers": [15, 20, 30, 5]
     },
 
     "actor_settings": {
