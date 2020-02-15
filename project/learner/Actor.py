@@ -19,9 +19,6 @@ class Actor:
         self.eligibilities = {}
         self.policy = {}
 
-    def initialize_actor(self):
-        pass
-
     # Adds new state and actions policy
     def add_sap_policy(self, state, action):
         if(state not in self.policy.keys()):

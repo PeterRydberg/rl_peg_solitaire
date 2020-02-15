@@ -19,9 +19,6 @@ class Critic:
         self.eligibilities = {}
         self.values = {}
 
-    def initialize_critic(self):
-        pass
-
     # Adds new state value
     def add_state_value(self, current_state):
         self.values[current_state] = random.uniform(0, 0.1)
