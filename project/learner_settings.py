@@ -68,7 +68,7 @@ tri_5_ann = {
 
     "critic_settings": {
         "c_type": "ann",
-        "c_learning_rate": 0.1,
+        "c_learning_rate": 0.001,
         "c_eligibility_decay": 0.99,
         "c_discount_factor": 0.99,
         "c_nn_layers": [1, 2, 3]
@@ -95,7 +95,7 @@ diam_4_ann = {
 
     "critic_settings": {
         "c_type": "ann",
-        "c_learning_rate": 0.1,
+        "c_learning_rate": 0.001,
         "c_eligibility_decay": 0.99,
         "c_discount_factor": 0.99,
         "c_nn_layers": [1, 2, 3]

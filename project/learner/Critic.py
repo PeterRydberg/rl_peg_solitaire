@@ -1,4 +1,5 @@
-import random
+from .CriticAnn import CriticAnn
+from .CriticTable import CriticTable
 
 
 class Critic:
@@ -11,48 +12,43 @@ class Critic:
         nn_layers
     ):
         self.critic_type = critic_type
-        self.learning_rate = learning_rate
-        self.eligibility_decay = eligibility_decay
-        self.discount_factor = discount_factor
-        self.nn_layers = nn_layers
 
-        self.eligibilities = {}
-        self.values = {}
+        if(self.critic_type == "table"):
+            self.evaluator = CriticTable(
+                learning_rate, eligibility_decay, discount_factor
+            )
+        elif(self.critic_type == "ann"):
+            self.evaluator = CriticAnn(
+                learning_rate, eligibility_decay, discount_factor, nn_layers
+            )
 
     # Adds new state value
     def add_state_value(self, current_state):
-        self.values[current_state] = random.uniform(0, 0.1)
+        self.evaluator.add_state_value(current_state)
 
     # Updates state value
     def update_state_value(self, state, temporal_diff):
-        self.values[state] += \
-            self.learning_rate * \
-            temporal_diff * \
-            self.eligibilities[state]
+        self.evaluator.update_state_value(state, temporal_diff)
 
     # Calculates temporal difference for the new state
     def calc_temp_diff(self, reward, current_state, previous_state):
-        # Add the board state if not in values
-        if(current_state not in self.values.keys()):
-            self.add_state_value(current_state)
-
-        return \
-            reward + \
-            (self.discount_factor * self.values[current_state]) - \
-            self.values[previous_state]
+        return self.evaluator.calc_temp_diff(
+            reward, current_state, previous_state
+        )
 
     # Updates eligibilities
     def update_eligibilities(self, state, decay=False):
-        # Check whether to decay or set to 1
-        if(not decay):
-            self.eligibilities[state] = 1
-        else:
-            self.eligibilities[state] = \
-                self.discount_factor * \
-                self.eligibility_decay * \
-                self.eligibilities[state]
+        self.evaluator.update_eligibilities(state, decay)
 
     # Reset all eligibilities
     def reset_eligibilities(self):
-        for i in self.eligibilities:
-            self.eligibilities[i] = 0
+        self.evaluator.reset_eligibilities()
+
+    def handle_board_state(self, board_state):
+        if(self.critic_type == "table"):
+            # Add the board state if not in values
+            if(board_state not in self.evaluator.values.keys()):
+                self.evaluator.add_state_value(board_state)
+        # ANN does not need a dictionary update
+        elif(self.critic_type == "ann"):
+            pass

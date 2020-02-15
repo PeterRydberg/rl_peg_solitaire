@@ -18,19 +18,19 @@ class ReinforcementLearner:
         self.game_settings = game_settings
 
         self.critic = Critic(
-                            critic_settings["c_type"],
-                            critic_settings["c_learning_rate"],
-                            critic_settings["c_eligibility_decay"],
-                            critic_settings["c_discount_factor"],
-                            critic_settings["c_nn_layers"]
-                            )
+            critic_settings["c_type"],
+            critic_settings["c_learning_rate"],
+            critic_settings["c_eligibility_decay"],
+            critic_settings["c_discount_factor"],
+            critic_settings["c_nn_layers"]
+        )
         self.actor = Actor(
-                            actor_settings["a_learning_rate"],
-                            actor_settings["a_eligibility_decay"],
-                            actor_settings["a_discount_factor"],
-                            actor_settings["a_e_greediness"],
-                            episodes
-                            )
+            actor_settings["a_learning_rate"],
+            actor_settings["a_eligibility_decay"],
+            actor_settings["a_discount_factor"],
+            actor_settings["a_e_greediness"],
+            episodes
+        )
 
     def train_model(self):
         performance = []
@@ -41,29 +41,20 @@ class ReinforcementLearner:
             current_game, board_state, legal_moves = self.init_game(
                 display_game=(episode+1) in self.game_settings["display_game"],
                 game_name=f'Episode {episode+1}'
-                )
+            )
 
-            # Initializes eligibilities at start of episode
+            # Initializes eligibilities at start of episode, using states
             self.init_eligibilities(board_state, legal_moves)
             actions_taken = []
 
             while legal_moves:
-                # Add the board state and actions if not in policy
-                if(board_state not in self.actor.policy.keys()):
-                    for action in legal_moves:
-                        self.actor.add_sap_policy(board_state, action)
-                # Add the board state if not in values
-                if(board_state not in self.critic.values.keys()):
-                    self.critic.add_state_value(board_state)
+                self.actor.handle_board_state(board_state, legal_moves)
+                self.critic.handle_board_state(board_state)
 
-                # Get and make the next move
-                prev_state = board_state
-                prev_action = self.actor.get_move(board_state)
-                result = current_game.try_move(prev_action, return_reward=True)
-
-                # Parse move result
-                reward, board_state, legal_moves = result
-                board_state = self.convert_flat_state_string(board_state)
+                prev_state, prev_action, reward, board_state, legal_moves = \
+                    self.make_game_choice(
+                        board_state, current_game, actions_taken
+                    )
 
                 # Update eligibility for the board state used
                 self.critic.update_eligibilities(
@@ -83,8 +74,6 @@ class ReinforcementLearner:
                     prev_state
                 )
 
-                actions_taken.append((prev_state, prev_action))
-
                 # Updates critic values, actor policy and eligibilities
                 # for each state action pair
                 self.value_policy_update(
@@ -98,6 +87,21 @@ class ReinforcementLearner:
         # Return training performance
         return performance
 
+    # Make an action choice and parse the results
+    def make_game_choice(self, board_state, current_game, actions_taken):
+        # Get and make the next move
+        prev_state = board_state
+        prev_action = self.actor.get_move(board_state)
+        result = current_game.try_move(prev_action, return_reward=True)
+
+        actions_taken.append((prev_state, prev_action))
+
+        # Parse move result
+        reward, board_state, legal_moves = result
+        board_state = self.convert_flat_state_string(board_state)
+
+        return prev_state, prev_action, reward, board_state, legal_moves
+
     def value_policy_update(self, actions, temporal_diff):
         for state, action in actions:
             # Update critic values and critic eligibility
@@ -107,6 +111,23 @@ class ReinforcementLearner:
             # Update critic values and critic eligibility
             self.actor.update_sap_policy(state, action, temporal_diff)
             self.actor.update_eligibilities(state, action, True)
+
+    def init_eligibilities(self, board_state, legal_moves):
+        # Reset all eligibilities before episode
+        self.critic.reset_eligibilities()
+        self.actor.reset_eligibilities()
+
+        # Initial eligibility update for the current board state
+        self.critic.update_eligibilities(
+            state=board_state,
+            decay=False
+        )
+        for action in legal_moves:
+            self.actor.update_eligibilities(
+                state=board_state,
+                action=action,
+                decay=False
+            )
 
     # Converts the Peghole object state to bitstring (label)
     def convert_flat_state_string(self, board_state):
@@ -118,6 +139,12 @@ class ReinforcementLearner:
                 state_string += "0"
 
         return state_string
+
+    def display_performance_graph(self, performance):
+        plt.plot(performance)
+        plt.ylabel('Amount of pegs left')
+        plt.xlabel('Episode number')
+        plt.show()
 
     def init_game(
         self,
@@ -141,29 +168,6 @@ class ReinforcementLearner:
         legal_moves = current_game.get_legal_moves(True)
 
         return current_game, board_state, legal_moves
-
-    def init_eligibilities(self, board_state, legal_moves):
-        # Reset all eligibilities before episode
-        self.critic.reset_eligibilities()
-        self.actor.reset_eligibilities()
-
-        # Initial eligibility update for the current board state
-        self.critic.update_eligibilities(
-            state=board_state,
-            decay=False
-        )
-        for action in legal_moves:
-            self.actor.update_eligibilities(
-                state=board_state,
-                action=action,
-                decay=False
-            )
-
-    def display_performance_graph(self, performance):
-        plt.plot(performance)
-        plt.ylabel('Amount of pegs left')
-        plt.xlabel('Episode number')
-        plt.show()
 
     # Runs a single game using greedy on-policy strategy
     def run_game(self):
