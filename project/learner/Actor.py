@@ -33,19 +33,6 @@ class Actor:
             temporal_diff * \
             self.eligibilities[state][action]
 
-    # Gets the new move for current state
-    def get_move(self, current_state):
-        # Uses e-greediness to determine best or random move
-        if(random.uniform(0, 1) < 1 - self.e_greediness):
-            # Returns the best policy move
-            return max(
-                self.policy[current_state],
-                key=(lambda key: self.policy[current_state][key])
-            )
-        else:
-            # Returns a random move
-            return random.choice(list(self.policy[current_state].keys()))
-
     # Updates eligibilities
     def update_eligibilities(self, state, action, decay=False):
         # If the state does is not initialized
@@ -66,6 +53,19 @@ class Actor:
         for state in self.eligibilities:
             for action in state:
                 self.eligibilities[state][action] = 0
+
+    # Gets the new move for current state
+    def get_move(self, current_state):
+        # Uses e-greediness to determine best or random move
+        if(random.uniform(0, 1) < 1 - self.e_greediness):
+            # Returns the best policy move
+            return max(
+                self.policy[current_state],
+                key=(lambda key: self.policy[current_state][key])
+            )
+        else:
+            # Returns a random move
+            return random.choice(list(self.policy[current_state].keys()))
 
     # Decrease greediness episodically, eventually zero
     def increase_greediness(self, episodes):

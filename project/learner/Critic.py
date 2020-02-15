@@ -30,12 +30,6 @@ class Critic:
     def update_state_value(self, state, temporal_diff):
         self.evaluator.update_state_value(state, temporal_diff)
 
-    # Calculates temporal difference for the new state
-    def calc_temp_diff(self, reward, current_state, previous_state):
-        return self.evaluator.calc_temp_diff(
-            reward, current_state, previous_state
-        )
-
     # Updates eligibilities
     def update_eligibilities(self, state, decay=False):
         self.evaluator.update_eligibilities(state, decay)
@@ -44,11 +38,12 @@ class Critic:
     def reset_eligibilities(self):
         self.evaluator.reset_eligibilities()
 
+    # Calculates temporal difference for the new state
+    def calc_temp_diff(self, reward, current_state, previous_state):
+        return self.evaluator.calc_temp_diff(
+            reward, current_state, previous_state
+        )
+
+    # When a new board state is introduced
     def handle_board_state(self, board_state):
-        if(self.critic_type == "table"):
-            # Add the board state if not in values
-            if(board_state not in self.evaluator.values.keys()):
-                self.evaluator.add_state_value(board_state)
-        # ANN does not need a dictionary update
-        elif(self.critic_type == "ann"):
-            pass
+        self.evaluator.handle_board_state(board_state)

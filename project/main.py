@@ -3,7 +3,7 @@ from learner_settings import tri_5_table, diam_4_table, tri_5_ann, diam_4_ann
 
 
 def main():
-    settings = tri_5_table
+    settings = diam_4_table
 
     try:
         # Creates and trains model
