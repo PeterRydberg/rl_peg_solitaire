@@ -26,29 +26,10 @@ class CriticAnn:
             input_shape,
             learning_rate
         )
-
-    # Adds new state value
-    def add_state_value(self, current_state):
-        pass
-
-    # Updates state value
-    def update_state_value(self, state, temporal_diff):
-        pass
-
-    # Updates eligibilities
-    def update_eligibilities(self, state, decay=False):
-        pass
-
-    # Reset all eligibilities
-    def reset_eligibilities(self):
-        pass
-
-    # Calculates temporal difference for the new state
-    def calc_temp_diff(self, reward, current_state, previous_state):
-        pass
-
-    def handle_board_state(self, board_state):
-        pass  # ANN does not need a dictionary update
+        self.optimizer = torch.optim.Adam(
+            self.model.parameters(),
+            self.learning_rate
+        )
 
     def create_pytorch_model(self, nn_layers, input_shape, learning_rate):
         model = torch.nn.Sequential()
@@ -72,6 +53,45 @@ class CriticAnn:
         model.add_module('relu_out', torch.nn.ReLU())
 
         return model
+
+    # Adds new state value
+    def add_state_value(self, current_state):
+        pass
+
+    # Updates state value
+    def update_state_value(self, state, temporal_diff):
+        pass
+
+    # Updates eligibilities
+    def update_eligibilities(self, state, decay=False):
+        pass
+
+    # Reset all eligibilities
+    def reset_eligibilities(self):
+        pass
+
+    # Calculates temporal difference for the new state
+    def calc_temp_diff(self, reward, current_state, previous_state):
+        return \
+            reward + \
+            (self.discount_factor * self.get_val_from_state(current_state)) - \
+            self.get_val_from_state(previous_state)
+
+    def get_loss_from_temp_diff(self, temp_diff):
+        return torch.mean(temp_diff**2)
+
+    # Gets a new model prediction from state
+    def get_val_from_state(self, state):
+        tensor = torch.Tensor(self.state_to_tensor(state))
+        return self.model(tensor)
+
+    # Converts state to tensor representation
+    def state_to_tensor(self, state):
+        bitlist = list(state)
+        return torch.tensor(list(map(float, bitlist)))
+
+    def handle_board_state(self, board_state):
+        pass  # ANN does not need a dictionary update
 
 
 '''
