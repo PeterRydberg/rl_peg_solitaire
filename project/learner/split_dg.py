@@ -90,11 +90,10 @@ def split_training_data(inputs, targets, vfrac=0.1, mix=True):
             np.random.shuffle(pairs)
         vcases = pairs[0:vc]
         tcases = pairs[vc:]
-        return np.array(
-            [tc[0] for tc in tcases]), np.array(
-            [tc[1] for tc in tcases]), np.array(
-            [vc[0] for vc in vcases]), np.array(
-            [vc[1] for vc in vcases])
+        return np.array([tc[0] for tc in tcases]), \
+            np.array([tc[1] for tc in tcases]), \
+            np.array([vc[0] for vc in vcases]), \
+            np.array([vc[1] for vc in vcases])
         #  return tcases[:,0], tcases[:,1], vcases[:,0], vcases[:,1]  # Can't get this to work properly
     else:
         return inputs, targets, [], []

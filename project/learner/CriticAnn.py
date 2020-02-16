@@ -1,5 +1,7 @@
-import tensorflow as tf
-from .split_dg import SplitDG
+# import tensorflow as tf
+# import SplitDG
+
+import torch
 
 
 class CriticAnn:
@@ -15,8 +17,15 @@ class CriticAnn:
         self.eligibility_decay = eligibility_decay
         self.discount_factor = discount_factor
 
-        self.model = self.create_model(nn_layers, input_shape, learning_rate)
-        self.gradients = SplitDG(self.model)
+        # self.model = self.create_keras_model(nn_layers, input_shape,
+        # learning_rate)
+        # self.gradients = SplitDG(self.model)
+
+        self.model = self.create_pytorch_model(
+            nn_layers,
+            input_shape,
+            learning_rate
+        )
 
     # Adds new state value
     def add_state_value(self, current_state):
@@ -41,7 +50,32 @@ class CriticAnn:
     def handle_board_state(self, board_state):
         pass  # ANN does not need a dictionary update
 
-    def create_model(self, nn_layers, input_shape, learning_rate):
+    def create_pytorch_model(self, nn_layers, input_shape, learning_rate):
+        model = torch.nn.Sequential()
+        layers = nn_layers.copy()
+        layers.insert(0, input_shape)  # Input layer
+        layers.append(1)  # Output layer
+
+        # Layer with initial input shape
+        model.add_module('input', torch.nn.Linear(input_shape, nn_layers[0]))
+        model.add_module('relu_in', torch.nn.ReLU())
+
+        # All but the input and output layers (hidden layers)
+        for i, layer in enumerate(nn_layers):
+            model.add_module(
+                f'layer{i+1}', torch.nn.Linear(layer, layers[i+2])
+            )
+            model.add_module(f'relu{i+1}', torch.nn.ReLU())
+
+        # One output value
+        model.add_module('output', torch.nn.Linear(1, 1))
+        model.add_module('relu_out', torch.nn.ReLU())
+
+        return model
+
+
+'''
+    def create_keras_model(self, nn_layers, input_shape, learning_rate):
         model = tf.keras.Sequential()
 
         # Layer with initial input shape
@@ -66,3 +100,4 @@ class CriticAnn:
             metrics=['accuracy', 'mae']
         )
         return model
+'''
