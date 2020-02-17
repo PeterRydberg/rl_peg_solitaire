@@ -103,7 +103,7 @@ class ReinforcementLearner:
     def make_game_choice(self, board_state, current_game, actions_taken):
         # Get and make the next move
         prev_state = board_state
-        prev_action = self.actor.get_move(board_state)
+        prev_action = self.actor.get_move(board_state, training=True)
         result = current_game.try_move(prev_action, return_reward=True)
 
         actions_taken.append((prev_state, prev_action))
@@ -194,7 +194,7 @@ class ReinforcementLearner:
 
         while legal_moves:
             # Get and make the next move
-            action = self.actor.get_move(board_state)
+            action = self.actor.get_move(board_state, legal_moves)
             result = current_game.try_move(action, return_reward=False)
 
             # Parse move result

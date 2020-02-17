@@ -87,7 +87,7 @@ diam_4_ann = {
 
     "game_settings": {
         "board_type": "diamond",
-        "board_size": 7,
+        "board_size": 4,
         "initial_empty": {},
         "live_update_frequency": 0.2,
         "display_game": ()  # (1, 50, 500)

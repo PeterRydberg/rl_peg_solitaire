@@ -55,7 +55,13 @@ class Actor:
                 self.eligibilities[state][action] = 0
 
     # Gets the new move for current state
-    def get_move(self, current_state):
+    def get_move(self, current_state, legal_moves=None, training=False):
+        # If the choice is not meant to alter the model, but the state
+        # does not exist in its policy after training: Return random legal move
+        if(training is False and current_state not in self.policy.keys()):
+            print("No state found, making random move")
+            return random.choice(legal_moves)
+
         # Uses e-greediness to determine best or random move
         if(random.uniform(0, 1) < 1 - self.e_greediness):
             # Returns the best policy move
