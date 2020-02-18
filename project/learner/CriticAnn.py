@@ -1,6 +1,3 @@
-# import tensorflow as tf
-# import SplitDG
-
 import torch
 
 
@@ -18,10 +15,6 @@ class CriticAnn:
         self.discount_factor = discount_factor
 
         self.eligibilities = {}
-
-        # self.model = self.create_keras_model(nn_layers, input_shape,
-        # learning_rate)
-        # self.gradients = SplitDG(self.model)
 
         self.model = self.create_pytorch_model(
             nn_layers,
@@ -147,32 +140,3 @@ class CriticAnn:
 
     def handle_board_state(self, board_state):
         pass  # ANN does not need a dictionary update
-
-
-'''
-    def create_keras_model(self, nn_layers, input_shape, learning_rate):
-        model = tf.keras.Sequential()
-
-        # Layer with initial input shape
-        model.add(
-            tf.keras.layers.Dense(
-                nn_layers[0],
-                activation='relu',
-                input_shape=(input_shape,)
-            )
-        )
-
-        # All but the first hidden layer
-        for layer in nn_layers[1:]:
-            model.add(tf.keras.layers.Dense(layer, activation='relu'))
-
-        # One output value
-        model.add(tf.keras.layers.Dense(1))
-
-        model.compile(
-            optimizer=tf.keras.optimizers.Adam(learning_rate),
-            loss='mse',
-            metrics=['accuracy', 'mae']
-        )
-        return model
-'''
