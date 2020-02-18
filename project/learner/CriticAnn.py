@@ -17,6 +17,8 @@ class CriticAnn:
         self.eligibility_decay = eligibility_decay
         self.discount_factor = discount_factor
 
+        self.eligibilities = {}
+
         # self.model = self.create_keras_model(nn_layers, input_shape,
         # learning_rate)
         # self.gradients = SplitDG(self.model)
@@ -68,6 +70,14 @@ class CriticAnn:
 
     # Reset all eligibilities
     def reset_eligibilities(self):
+        # For every weight in a state eligibility dictionary, set to zero
+        for state in self.eligibilities:
+            for layer in self.model.parameters():
+                for weight in layer:
+                    pass
+
+    # Update SAP and eligibilities for each action
+    def actions_update(self, actions, temporal_diff):
         pass
 
     # Calculates temporal difference for the new state

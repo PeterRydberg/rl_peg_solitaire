@@ -52,21 +52,10 @@ class ReinforcementLearner:
                 self.actor.handle_board_state(board_state, legal_moves)
                 self.critic.handle_board_state(board_state)
 
-                prev_state, prev_action, reward, board_state, legal_moves = \
+                prev_state, reward, board_state, legal_moves = \
                     self.make_game_choice(
                         board_state, current_game, actions_taken
                     )
-
-                # Update eligibility for the board state used
-                self.critic.update_eligibilities(
-                    state=prev_state,
-                    decay=False
-                )
-                self.actor.update_eligibilities(
-                    state=prev_state,
-                    action=prev_action,
-                    decay=False
-                )
 
                 # Update critic temporal difference
                 temporal_diff = self.critic.calc_temp_diff(
@@ -90,14 +79,8 @@ class ReinforcementLearner:
 
     # Handles updating of policy and critic values
     def value_policy_update(self, actions, temporal_diff):
-        for state, action in actions:
-            # Update critic values and critic eligibility
-            self.critic.update_state_value(state, temporal_diff)
-            self.critic.update_eligibilities(state, True)
-
-            # Update critic values and critic eligibility
-            self.actor.update_sap_policy(state, action, temporal_diff)
-            self.actor.update_eligibilities(state, action, True)
+        self.critic.actions_update(actions, temporal_diff)
+        self.actor.actions_update(actions, temporal_diff)
 
     # Make an action choice and parse the results
     def make_game_choice(self, board_state, current_game, actions_taken):
@@ -112,7 +95,7 @@ class ReinforcementLearner:
         reward, board_state, legal_moves = result
         board_state = self.convert_flat_state_string(board_state)
 
-        return prev_state, prev_action, reward, board_state, legal_moves
+        return prev_state, reward, board_state, legal_moves
 
     def init_eligibilities(self, board_state, legal_moves):
         # Reset all eligibilities before episode

@@ -54,12 +54,26 @@ class Actor:
             for action in state:
                 self.eligibilities[state][action] = 0
 
+    # Update SAP and eligibilities for each action
+    def actions_update(self, actions, temporal_diff):
+        # Update eligibility for the board state and action used
+        prev_state, prev_action = actions[-1]
+        self.update_eligibilities(
+            state=prev_state,
+            action=prev_action,
+            decay=False
+        )
+
+        for state, action in actions:
+            # Update actor values and actor eligibility
+            self.update_sap_policy(state, action, temporal_diff)
+            self.update_eligibilities(state, action, True)
+
     # Gets the new move for current state
     def get_move(self, current_state, legal_moves=None, training=False):
         # If the choice is not meant to alter the model, but the state
         # does not exist in its policy after training: Return random legal move
         if(training is False and current_state not in self.policy.keys()):
-            print("No state found, making random move")
             return random.choice(legal_moves)
 
         # Uses e-greediness to determine best or random move
