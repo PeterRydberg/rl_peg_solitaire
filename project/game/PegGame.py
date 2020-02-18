@@ -1,5 +1,7 @@
 from .Board import Board
+
 from enum import Enum
+import itertools
 
 
 class PegGame:
@@ -109,16 +111,16 @@ class PegGame:
     def get_reward(self, incremental=False):
         legal_moves = self.get_legal_moves()
         reward = 0
+        peglist = list(itertools.chain(*self.board.board_content))
 
         # If goal is to reduce pegs throughout the game
         if(incremental):
-            for row in self.board.board_content:
-                for peghole in row:
-                    reward += 25 if peghole.content == "empty" else 0
+            for peghole in peglist:
+                reward += 100/len(peglist) if peghole.content == "empty" else 0
         # If game is over, reward extra for actually winning
         # May help if only goal is to end up with one peg
         if(len(legal_moves) < 1):
-            reward += 1000 if self.get_filled_holes() == 1 else -1000
+            reward += 100 if self.get_filled_holes() == 1 else -100
 
         return reward
 
