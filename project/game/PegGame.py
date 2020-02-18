@@ -63,7 +63,7 @@ class PegGame:
         # Returns with or without reward (for training purposes)
         if(return_reward is True):
             return ((
-                self.get_reward(fixed_reward=True),
+                self.get_reward(incremental=True),
                 self.board.board_content,
                 self.get_legal_moves(True)
             ))
@@ -97,7 +97,7 @@ class PegGame:
                         if(simplified):
                             legal_moves.append(
                                 ((r, c), self.directions(i).name)
-                                )
+                            )
                         else:
                             legal_moves.append(
                                 (peghole, self.directions(i).value)
@@ -106,20 +106,21 @@ class PegGame:
         return legal_moves
 
     # Calculates reward based on amount of pegs left
-    def get_reward(self, fixed_reward=True):
+    def get_reward(self, incremental=False):
         legal_moves = self.get_legal_moves()
+        reward = 0
 
-        # If only goal is to end up with one peg
-        if(fixed_reward and len(legal_moves) < 1):
-            return 5000 if self.get_filled_holes() == 1 else -5000
         # If goal is to reduce pegs throughout the game
-        else:
-            reward = 0
+        if(incremental):
             for row in self.board.board_content:
                 for peghole in row:
-                    reward += 10 if peghole.content == "empty" else 0
-            return reward
-        return 0
+                    reward += 25 if peghole.content == "empty" else 0
+        # If game is over, reward extra for actually winning
+        # May help if only goal is to end up with one peg
+        if(len(legal_moves) < 1):
+            reward += 1000 if self.get_filled_holes() == 1 else -1000
+
+        return reward
 
     # Returns the amount of filled holes on the board
     def get_filled_holes(self):
