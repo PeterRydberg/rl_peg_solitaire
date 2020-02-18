@@ -62,23 +62,68 @@ class CriticAnn:
 
     # Updates state value
     def update_state_value(self, state, temporal_diff):
-        pass
+        for i, layer in enumerate(self.model.parameters()):
+            for j, node_weights in enumerate(layer):
+                node_weights = \
+                    node_weights + \
+                    self.learning_rate * \
+                    temporal_diff * \
+                    self.eligibilities[state][i][j]
+            self.optimizer.step()
 
     # Updates eligibilities
     def update_eligibilities(self, state, decay=False):
-        pass
+        if(not decay):
+            # If state is not in the eligibility trace
+            if(state not in self.eligibilities.keys()):
+                self.eligibilities[state] = {}
+
+            for i, layer in enumerate(self.model.parameters()):
+                # If the layer is not in the state-layer eligibility trace
+                if(i not in self.eligibilities[state].keys()):
+                    self.eligibilities[state][i] = {}
+
+                for j in range(len(layer)):
+                    # Set the node weight eligibility to 1
+                    self.eligibilities[state][i][j] = torch.ones(
+                        layer[j].size()
+                    )
+        else:
+            for i, layer in enumerate(self.model.parameters()):
+                for j in range(len(layer)):
+                    self.eligibilities[state][i][j] = \
+                        self.eligibilities[state][i][j] + \
+                        layer.grad[j]
 
     # Reset all eligibilities
     def reset_eligibilities(self):
         # For every weight in a state eligibility dictionary, set to zero
         for state in self.eligibilities:
-            for i, layer in enumerate(self.model.parameters()):
-                for j, weight in enumerate(layer):
-                    self.eligibilities[state][i][j] = torch.zeros(layer.size)
+            for layer in self.eligibilities[state]:
+                for node in self.eligibilities[state][layer]:
+                    self.eligibilities[state][layer][node] = torch.zeros(
+                        self.eligibilities[state][layer][node].size()
+                    )
 
     # Update SAP and eligibilities for each action
     def actions_update(self, actions, temporal_diff):
-        pass
+        # Update eligibility and weights for the board state used
+        prev_state, _ = actions[-1]
+
+        self.model.zero_grad()
+        loss = self.get_loss_from_temp_diff(temporal_diff)
+        loss.backward()
+
+        self.update_eligibilities(
+            state=prev_state,
+            decay=False
+        )
+
+        with torch.no_grad():
+            for state, _ in actions:
+                # Update critic values and critic eligibility
+                self.update_eligibilities(state, True)
+                self.update_state_value(state, temporal_diff)
 
     # Calculates temporal difference for the new state
     def calc_temp_diff(self, reward, current_state, previous_state):

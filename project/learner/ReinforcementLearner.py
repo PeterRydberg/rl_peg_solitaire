@@ -76,6 +76,9 @@ class ReinforcementLearner:
 
             self.actor.increase_greediness(self.episodes)
             performance.append(current_game.get_filled_holes())
+            print(
+                f'Episode {episode + 1} had performance {current_game.get_filled_holes()}'
+            )
 
         # Return training performance
         return performance
