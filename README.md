@@ -8,9 +8,10 @@ Create a new environment by running `python3 -m venv ./venv`. Then activate it b
 The project consists of two distinct components, namely the Reinforcement Learner and the Simulated World (or environment, i.e., the game itself). This seperation is built upon the concept of the Critical Divide, where the learner does not make any assumptions about the game and the game itself does not provide any deduced (learned) information about its states. They are in seperate folders for this project.
 
 ### Reinforcement Learner (learner)
-
+The reinforcement learner consists of an Actor, a Critic and an encapsulating class called ReinforcementLearner. This class employs a general learning algorithm that uses the actor and critic when necessary. It does not concern itself with exactly *how* these classes operate internally. For instance, whether the critic is table-based or ANN-based does not matter. Additionally, it never directly interacts with the game board. It asks for the game state, legal actions, rewards, etc. through functions built into the simulated world. That way, the reinforcement learner does not know much about the world other than the relevant states for it.
 
 ### Simulated World (game)
+The simulated world is based on the PegGame class. This class is the one that interacts with the other classes in the world, and acts as an intermediate to the reinforcement learner. It contains the board rules, decides upon rewards and legal actions, and returns board states in readable manners. The Board class contains the board structure and Peghole objects. Additionally, the BoardGraph class is used for display if the current PegGame is asked for it.
 
 ## Documentation
 The `main.py`-file can be modified to train a new model, display the performance graph, and run a game after training for display purposes (does not affect the learner's values in any way). In order to create settings for the learner and game, use the `learner_settings.py`-file. Create a dictionary for the settings, and import it from `main.py`. The dictionary consists of sub-dictionaries, with the keys of `game_settings` (settings for the game to be learned), `critic_settings` (settings for the learner's critic), and `actor_settings` (settings for the learner's actor). Additionally, the `episodes` field specifies how many episodes are to be used during training.
