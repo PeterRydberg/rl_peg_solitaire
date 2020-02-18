@@ -48,10 +48,13 @@ class ReinforcementLearner:
             self.init_eligibilities(board_state, legal_moves)
             actions_taken = []
 
+            # Loops until game is lost/won
             while legal_moves:
+                # Handles new board state, if actor/critic needs inits
                 self.actor.handle_board_state(board_state, legal_moves)
                 self.critic.handle_board_state(board_state)
 
+                # Makes move and parses results
                 prev_state, reward, board_state, legal_moves = \
                     self.make_game_choice(
                         board_state, current_game, actions_taken
@@ -97,22 +100,11 @@ class ReinforcementLearner:
 
         return prev_state, reward, board_state, legal_moves
 
+    # Initializes eligibilities before each episode
     def init_eligibilities(self, board_state, legal_moves):
         # Reset all eligibilities before episode
         self.critic.reset_eligibilities()
         self.actor.reset_eligibilities()
-
-        # Initial eligibility update for the current board state
-        self.critic.update_eligibilities(
-            state=board_state,
-            decay=False
-        )
-        for action in legal_moves:
-            self.actor.update_eligibilities(
-                state=board_state,
-                action=action,
-                decay=False
-            )
 
     # Converts the Peghole object state to bitstring (label)
     def convert_flat_state_string(self, board_state):

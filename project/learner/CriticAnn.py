@@ -58,7 +58,7 @@ class CriticAnn:
 
     # Adds new state value
     def add_state_value(self, current_state):
-        pass
+        pass  # ANN does not need a dictionary update
 
     # Updates state value
     def update_state_value(self, state, temporal_diff):
@@ -72,9 +72,9 @@ class CriticAnn:
     def reset_eligibilities(self):
         # For every weight in a state eligibility dictionary, set to zero
         for state in self.eligibilities:
-            for layer in self.model.parameters():
-                for weight in layer:
-                    pass
+            for i, layer in enumerate(self.model.parameters()):
+                for j, weight in enumerate(layer):
+                    self.eligibilities[state][i][j] = torch.zeros(layer.size)
 
     # Update SAP and eligibilities for each action
     def actions_update(self, actions, temporal_diff):
