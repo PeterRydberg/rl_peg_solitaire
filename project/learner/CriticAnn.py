@@ -21,9 +21,15 @@ class CriticAnn:
             input_shape,
             learning_rate
         )
-        self.optimizer = torch.optim.Adam(
+        # self.optimizer = torch.optim.Adam(
+        #    self.model.parameters(),
+        #    self.learning_rate
+        # )
+
+        self.optimizer = torch.optim.SGD(
             self.model.parameters(),
-            self.learning_rate
+            self.learning_rate,
+            0.9
         )
 
     def create_pytorch_model(self, nn_layers, input_shape, learning_rate):
@@ -45,7 +51,7 @@ class CriticAnn:
 
         # One output value
         model.add_module('output', torch.nn.Linear(1, 1))
-        model.add_module('relu_out', torch.nn.ReLU())
+        model.add_module('sigmoid_out', torch.nn.Sigmoid())
 
         return model
 
@@ -99,13 +105,17 @@ class CriticAnn:
                     )
 
     # Update SAP and eligibilities for each action
-    def actions_update(self, actions, temporal_diff):
+    def actions_update(self, actions_taken, temporal_diff):
         # Update eligibility and weights for the board state used
-        prev_state, _ = actions[-1]
+        prev_state, _ = actions_taken[-1]
 
         self.model.zero_grad()
         loss = self.get_loss_from_temp_diff(temporal_diff)
         loss.backward()
+        # print(loss)
+        # for layer in self.model.parameters():
+        #     print("layer", layer)
+        #     print("grad", layer.grad)
 
         self.update_eligibilities(
             state=prev_state,
@@ -113,7 +123,7 @@ class CriticAnn:
         )
 
         with torch.no_grad():
-            for state, _ in actions:
+            for state, _ in actions_taken:
                 # Update critic values and critic eligibility
                 self.update_eligibilities(state, True)
                 self.update_state_value(state, temporal_diff)
@@ -125,6 +135,7 @@ class CriticAnn:
             (self.discount_factor * self.get_val_from_state(current_state)) - \
             self.get_val_from_state(previous_state)
 
+    # Mean squared error from initial TD error
     def get_loss_from_temp_diff(self, temp_diff):
         return torch.mean(temp_diff**2)
 

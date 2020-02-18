@@ -76,17 +76,25 @@ class ReinforcementLearner:
 
             self.actor.increase_greediness(self.episodes)
             performance.append(current_game.get_filled_holes())
+
+            ##### REMOVE #####
             print(
                 f'Episode {episode + 1} had performance {current_game.get_filled_holes()}'
             )
+
+            for state, _ in actions_taken:
+                value = self.critic.evaluator.get_val_from_state(state)
+                print(
+                    f'\tState {state} had a value of {value}')
+            ##### REMOVE #####
 
         # Return training performance
         return performance
 
     # Handles updating of policy and critic values
-    def value_policy_update(self, actions, temporal_diff):
-        self.critic.actions_update(actions, temporal_diff)
-        self.actor.actions_update(actions, temporal_diff)
+    def value_policy_update(self, actions_taken, temporal_diff):
+        self.critic.actions_update(actions_taken, temporal_diff)
+        self.actor.actions_update(actions_taken, temporal_diff)
 
     # Make an action choice and parse the results
     def make_game_choice(self, board_state, current_game, actions_taken):

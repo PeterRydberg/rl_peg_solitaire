@@ -39,8 +39,8 @@ class Critic:
     def update_eligibilities(self, state, decay=False):
         self.evaluator.update_eligibilities(state, decay)
 
-    def actions_update(self, actions, temporal_diff):
-        self.evaluator.actions_update(actions, temporal_diff)
+    def actions_update(self, actions_taken, temporal_diff):
+        self.evaluator.actions_update(actions_taken, temporal_diff)
 
     # Reset all eligibilities
     def reset_eligibilities(self):

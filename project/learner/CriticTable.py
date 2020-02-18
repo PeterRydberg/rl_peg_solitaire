@@ -43,15 +43,15 @@ class CriticTable:
             self.eligibilities[i] = 0
 
     # Update SAP and eligibilities for each action
-    def actions_update(self, actions, temporal_diff):
+    def actions_update(self, actions_taken, temporal_diff):
         # Update eligibility for the board state used
-        prev_state, _ = actions[-1]
+        prev_state, _ = actions_taken[-1]
         self.update_eligibilities(
             state=prev_state,
             decay=False
         )
 
-        for state, _ in actions:
+        for state, _ in actions_taken:
             # Update critic values and critic eligibility
             self.update_state_value(state, temporal_diff)
             self.update_eligibilities(state, True)

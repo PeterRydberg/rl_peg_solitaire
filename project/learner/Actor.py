@@ -55,16 +55,16 @@ class Actor:
                 self.eligibilities[state][action] = 0
 
     # Update SAP and eligibilities for each action
-    def actions_update(self, actions, temporal_diff):
+    def actions_update(self, actions_taken, temporal_diff):
         # Update eligibility for the board state and action used
-        prev_state, prev_action = actions[-1]
+        prev_state, prev_action = actions_taken[-1]
         self.update_eligibilities(
             state=prev_state,
             action=prev_action,
             decay=False
         )
 
-        for state, action in actions:
+        for state, action in actions_taken:
             # Update actor values and actor eligibility
             self.update_sap_policy(state, action, temporal_diff)
             self.update_eligibilities(state, action, True)
