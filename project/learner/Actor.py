@@ -14,7 +14,7 @@ class Actor:
         self.eligibility_decay = eligibility_decay
         self.discount_factor = discount_factor
         self.e_greediness = e_greediness
-        self.e_greediness_decrease = e_greediness / episodes
+        self.e_greediness_increase = e_greediness / episodes
 
         self.eligibilities = {}
         self.policy = {}
@@ -77,7 +77,7 @@ class Actor:
             return random.choice(legal_moves)
 
         # Uses e-greediness to determine best or random move
-        if(random.uniform(0, 1) < 1 - self.e_greediness):
+        if(random.uniform(0, 1) > 1 - self.e_greediness):
             # Returns the best policy move
             return max(
                 self.policy[current_state],
@@ -87,12 +87,12 @@ class Actor:
             # Returns a random move
             return random.choice(list(self.policy[current_state].keys()))
 
-    # Decrease greediness episodically, eventually zero
+    # Increase greediness episodically, eventually one
     def increase_greediness(self, episodes):
-        self.e_greediness -= self.e_greediness_decrease
+        self.e_greediness += self.e_greediness_increase
 
     def set_greedy(self):
-        self.e_greediness = 0
+        self.e_greediness = 1
 
     def handle_board_state(self, board_state, legal_moves):
         # Add the board state and actions if not in policy

@@ -78,17 +78,23 @@ class ReinforcementLearner:
             performance.append(current_game.get_filled_holes())
 
             ##### REMOVE #####
-            print(
-                f'Episode {episode + 1} had performance {current_game.get_filled_holes()}'
-            )
+            # print(
+            #     f'Episode {episode + 1} had performance {current_game.get_filled_holes()}'
+            # )
 
-            for state, _ in actions_taken:
-                value = self.critic.evaluator.get_val_from_state(state)
-                print(
-                    f'\tState {state} had a value of {value}')
+            # for state, _ in actions_taken:
+            #     value = self.critic.evaluator.get_val_from_state(state)
+            #     print(
+            #         f'\tState {state} had a value of {value}')
             ##### REMOVE #####
 
         # Return training performance
+        print("\n\nLegggggooooooo\n\n")
+        print(self.critic.evaluator.get_val_from_state('1111011111'))
+        print(self.critic.evaluator.get_val_from_state('0001000000'))
+        print(self.critic.evaluator.get_val_from_state('0010000010'))
+        print(self.critic.evaluator.get_val_from_state('1100000000'))
+        print(self.critic.evaluator.get_val_from_state('0000001000'))
         return performance
 
     # Handles updating of policy and critic values
