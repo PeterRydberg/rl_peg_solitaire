@@ -11,6 +11,7 @@ class BoardGraph:
         self.generate_graph(board_content)
         self.pos = self.compute_positions(100, board_type)
 
+    # Graph generation and init
     def generate_graph(self, pegholes):
         edges = self.generate_networkx_edges(pegholes)
         self.graph.add_edges_from(edges)  # Add to visual graph
@@ -20,16 +21,19 @@ class BoardGraph:
         plt.ion()
         plt.axis('off')
 
+    # Show
     def show_graph(self, game_name):
         self.draw_graph(game_name)
         plt.show()
         plt.pause(self.live_update_frequency)  # Used when only blocking GPU
 
+    # Update
     def live_update_graph(self, game_name):
         plt.clf()
         self.draw_graph(game_name)
         plt.pause(self.live_update_frequency)  # Used when only blocking GPU
 
+    # Draw
     def draw_graph(self, game_name):
         plt.clf()
         plt.title(game_name)
@@ -41,6 +45,7 @@ class BoardGraph:
             font_weight='bold',
         )
 
+    # Define node-graph positions
     def compute_positions(self, size, board_type):
         pos = {}
         step = size / 10
@@ -59,6 +64,7 @@ class BoardGraph:
 
         return pos
 
+    # Get color list
     def get_color_list(self, nodes):
         colors = []
         for node in nodes:
@@ -66,6 +72,7 @@ class BoardGraph:
 
         return colors
 
+    # Define color map
     def get_node_color(self, node):
         if(node.content == 'filled'):
             return '#2b2b2b'

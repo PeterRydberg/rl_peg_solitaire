@@ -77,24 +77,6 @@ class ReinforcementLearner:
             self.actor.increase_greediness(self.episodes)
             performance.append(current_game.get_filled_holes())
 
-            ##### REMOVE #####
-            # print(
-            #     f'Episode {episode + 1} had performance {current_game.get_filled_holes()}'
-            # )
-
-            # for state, _ in actions_taken:
-            #     value = self.critic.evaluator.get_val_from_state(state)
-            #     print(
-            #         f'\tState {state} had a value of {value}')
-            ##### REMOVE #####
-
-        # Return training performance
-        print("\n\nLegggggooooooo\n\n")
-        print(self.critic.evaluator.get_val_from_state('1111011111'))
-        print(self.critic.evaluator.get_val_from_state('0001000000'))
-        print(self.critic.evaluator.get_val_from_state('0010000010'))
-        print(self.critic.evaluator.get_val_from_state('1100000000'))
-        print(self.critic.evaluator.get_val_from_state('0000001000'))
         return performance
 
     # Handles updating of policy and critic values
@@ -134,12 +116,14 @@ class ReinforcementLearner:
 
         return state_string
 
+    # Displays the performance graph
     def display_performance_graph(self, performance):
         plt.plot(performance)
         plt.ylabel('Amount of pegs left')
         plt.xlabel('Episode number')
         plt.show()
 
+    # Gets the board shape for critic input
     def get_board_shape(self):
         game = PegGame(
             self.game_settings["board_type"],
@@ -151,6 +135,7 @@ class ReinforcementLearner:
         )
         return len(self.convert_flat_state_string(game.board.board_content))
 
+    # Initializes new game
     def init_game(
         self,
         display_game=False,

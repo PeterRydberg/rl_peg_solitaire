@@ -113,8 +113,7 @@ class PegGame:
         reward = 0
         peglist = list(itertools.chain(*self.board.board_content))
 
-        # If game is over, reward extra for actually winning
-        # May help if only goal is to end up with one peg
+        # If game is over, give reward
         if(len(legal_moves) < 1):
             # If goal is to reduce pegs throughout the game
             if(incremental):
@@ -122,6 +121,9 @@ class PegGame:
 
                 for peghole in peglist:
                     reward += incr_reward if peghole.content == "empty" else 0
+
+            # Reward extra for actually winning
+            # May help if only goal is to end up with one peg
             reward += 100 if self.get_filled_holes() == 1 else -100
 
         return reward

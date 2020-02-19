@@ -91,11 +91,12 @@ class Actor:
     def increase_greediness(self, episodes):
         self.e_greediness += self.e_greediness_increase
 
+    # Only greedy approach
     def set_greedy(self):
         self.e_greediness = 1
 
+    # Add the board state and actions if not in policy
     def handle_board_state(self, board_state, legal_moves):
-        # Add the board state and actions if not in policy
         if(board_state not in self.policy.keys()):
             for action in legal_moves:
                 self.add_sap_policy(board_state, action)

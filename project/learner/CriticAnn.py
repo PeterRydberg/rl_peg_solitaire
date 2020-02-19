@@ -21,10 +21,6 @@ class CriticAnn:
             input_shape,
             learning_rate
         )
-        # self.optimizer = torch.optim.Adam(
-        #    self.model.parameters(),
-        #    self.learning_rate
-        # )
 
         self.optimizer = torch.optim.SGD(
             self.model.parameters(),
@@ -32,6 +28,7 @@ class CriticAnn:
             0.9
         )
 
+    # Initializes new neural network
     def create_pytorch_model(self, nn_layers, input_shape, learning_rate):
         model = torch.nn.Sequential()
         layers = nn_layers.copy()
@@ -72,6 +69,7 @@ class CriticAnn:
 
     # Updates eligibilities
     def update_eligibilities(self, decay=False):
+        # Updates eligibilities using the backprop formula
         if(not decay):
             for i, layer in enumerate(self.model.parameters()):
                 # If the layer is not in the state-layer eligibility trace
@@ -88,6 +86,7 @@ class CriticAnn:
                     self.eligibilities[i][j] = \
                         self.eligibilities[i][j] + \
                         layer.grad[j]
+        # Decays elegibility for the given state
         else:
             for i, layer in enumerate(self.model.parameters()):
                 for j in range(len(layer)):
@@ -110,11 +109,6 @@ class CriticAnn:
         self.model.zero_grad()
         loss = self.get_loss_from_temp_diff(temporal_diff)
         loss.backward()
-        # print(temporal_diff)
-        # print(loss)
-        for layer in self.model.parameters():
-            print("layer", layer)
-            print("grad", layer.grad)
 
         # Update elegibility of the neural net
         self.update_eligibilities(
@@ -129,10 +123,12 @@ class CriticAnn:
 
     # Calculates temporal difference for the new state
     def calc_temp_diff(self, reward, current_state, previous_state):
-        return \
-            reward + \
-            (self.discount_factor * self.get_val_from_state(current_state)) - \
-            self.get_val_from_state(previous_state)
+        target = reward + \
+            (self.discount_factor * self.get_val_from_state(current_state))
+        out = self.get_val_from_state(previous_state)
+        temp_diff = target - out
+
+        return temp_diff
 
     # Mean squared error from initial TD error
     def get_loss_from_temp_diff(self, temp_diff):

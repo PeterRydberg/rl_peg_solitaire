@@ -67,7 +67,7 @@ class CriticTable:
             (self.discount_factor * self.values[current_state]) - \
             self.values[previous_state]
 
+    # Add the board state if not in values
     def handle_board_state(self, board_state):
-        # Add the board state if not in values
         if(board_state not in self.values.keys()):
             self.add_state_value(board_state)

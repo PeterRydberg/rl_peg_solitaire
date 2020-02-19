@@ -69,6 +69,7 @@ class Board:
 
         return board_content
 
+    # Generate peghole
     def gen_peghole(self, initial_empty, coordinate):
         peghole = Peghole()
         peghole.coordinates = coordinate
@@ -80,6 +81,7 @@ class Board:
 
         return peghole
 
+    # Create peghole neighborhood for all pegholes
     def add_to_peghole_neighborhood(self):
         for r, row in enumerate(self.board_content):
             for c, item in enumerate(row):
@@ -98,10 +100,10 @@ class Board:
                     for index in edge_indexes:
                         if(  # If inside of board bounds
                             not(index[0] < 0 or index[0] >= self.height or (
-                                    index[1] == c
-                                    and index[0] < len(row)
-                                    and c == r
-                                ))
+                                index[1] == c
+                                and index[0] < len(row)
+                                and c == r
+                            ))
                             and
                             not(index[1] < 0 or index[1] >= self.height or (
                                 index[0] <= r and index[1] >= len(row)))
@@ -131,7 +133,7 @@ class Board:
                         ):  # Append the node to neighbors
                             item.neighbors.append(
                                 self.board_content[index[0]][index[1]]
-                                )
+                            )
                         else:  # Else, append None
                             item.neighbors.append(None)
 
